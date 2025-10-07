@@ -1,6 +1,7 @@
-# Node
+# Node modules
 node_modules/
-npm-debug.log
+
+# Environment files
 .env
 
 # OS / IDE
@@ -11,6 +12,6 @@ npm-debug.log
 # Database dump
 backend/db.sql
 
-# Build
+# Build (sau này khi có frontend)
 frontend/dist/
 frontend/build/
