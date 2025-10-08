@@ -1,36 +1,31 @@
 const db = require('../config/db');
-const bcrypt = require('bcrypt');
 
 const User = {
-    // Get all users
-  getAll: (callback) => {
-    db.query('SELECT * FROM users', callback);
+  async getAll() {
+    const [rows] = await db.query('SELECT id, name, email, phone, role, created_at, updated_at FROM users');
+    return rows;
   },
 
-  // Find user by email
-  findByEmail: (email, callback) => {
-    db.query('SELECT * FROM users WHERE email = ?', [email], callback);
+  async create({ name, email, password, phone, role }) {
+    const sql = `INSERT INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, ?)`;
+    const [result] = await db.query(sql, [name, email, password, phone, role]);
+    return { id: result.insertId, name, email, phone, role };
   },
 
-  // Find user by id
-  findById: (id, callback) => {
-    db.query('SELECT * FROM users WHERE id = ?', [id], callback);
+  async delete(id) {
+    const [result] = await db.query('DELETE FROM users WHERE id = ?', [id]);
+    return result.affectedRows;
   },
 
-  // Create new user
-  create: (userData, callback) => {
-    const { name, email, password, phone, role } = userData;
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    db.query(
-      'INSERT INTO users (name, email, password, phone, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [name, email, hashedPassword, phone, role, new Date(), new Date()],
-      callback
-    );  
+  async findByEmail(email) {
+    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    return rows[0];
   },
 
-  // Delete user
-  delete: (id, callback) => {
-    db.query('DELETE FROM users WHERE id = ?', [id], callback);
+  async findById(id) {
+    const [rows] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+    return rows[0];
   },
 };
+
 module.exports = User;
