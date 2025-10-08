@@ -13,6 +13,6 @@ node_modules/
 backend/db.sql
 !backend/db_sample.sql
 
-# Build (sau này khi có frontend)
+# Build
 frontend/dist/
 frontend/build/
