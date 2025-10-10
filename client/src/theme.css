@@ -1,0 +1,150 @@
+/* Barber Booking Theme.css
+   -------------------------------------
+   Tone màu chính: đen nâu – vàng ánh kim
+   Cảm hứng: Luxury barber shop / vintage style
+   Author: Ngo Dinh Nam
+*/
+
+:root {
+    /* Màu nền chính */
+    --color-dark-bg: #0d0d0d;
+    --color-dark-bg2: #1a1a1a;
+  
+    /* Màu thương hiệu */
+    --color-gold: #c29e75;
+    --color-gold-dark: #a47e4f;
+  
+    /* Màu chữ */
+    --color-text-main: #fdf8f2;
+    --color-text-light: #e6cfa6;
+    --color-text-muted: #b8b8b8;
+  
+    /* Màu input & border */
+    --color-input-bg: #3a3124;
+    --color-border: rgba(194, 158, 117, 0.5);
+  
+    /* Hiệu ứng */
+    --transition-fast: all 0.2s ease;
+    --shadow-gold: 0 8px 30px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Toàn trang nền gradient */
+  body {
+    background: linear-gradient(to bottom, var(--color-dark-bg), var(--color-dark-bg2));
+    color: var(--color-text-main);
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.3px;
+  }
+  
+  /* Container chung (form / box) */
+  .barber-box {
+    background: rgba(17, 17, 17, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(194, 158, 117, 0.3);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-gold);
+    padding: 2rem;
+    transition: var(--transition-fast);
+  }
+  .barber-box:hover {
+    border-color: rgba(194, 158, 117, 0.6);
+  }
+  
+  /* Tiêu đề chính */
+  .barber-title {
+    color: var(--color-gold);
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+  
+  /* Input, Select, Textarea */
+  .barber-input,
+  .barber-select,
+  .barber-textarea {
+    width: 100%;
+    background: rgba(58, 49, 36, 0.9);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-main);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    transition: var(--transition-fast);
+  }
+  .barber-input::placeholder,
+  .barber-textarea::placeholder {
+    color: var(--color-text-light);
+  }
+  .barber-input:focus,
+  .barber-select:focus,
+  .barber-textarea:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 1px var(--color-gold);
+  }
+  
+  /* Nút chính */
+  .barber-btn {
+    background: linear-gradient(to right, var(--color-gold), var(--color-gold-dark));
+    color: #000;
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 10px rgba(194, 158, 117, 0.2);
+    transition: var(--transition-fast);
+  }
+  .barber-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.04);
+    box-shadow: 0 4px 20px rgba(194, 158, 117, 0.4);
+  }
+  
+  /* Link vàng */
+  .barber-link {
+    color: var(--color-gold);
+    font-weight: 500;
+    transition: var(--transition-fast);
+  }
+  .barber-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Avatar viền vàng */
+  .barber-avatar {
+    border: 2px solid var(--color-gold);
+    box-shadow: 0 2px 10px rgba(194, 158, 117, 0.3);
+    border-radius: 9999px;
+  }
+  
+  /* Bảng dữ liệu (Profile) */
+  .barber-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .barber-table th,
+  .barber-table td {
+    border: 1px solid rgba(194, 158, 117, 0.3);
+    padding: 0.7rem 1rem;
+    text-align: left;
+  }
+  .barber-table th {
+    background: rgba(58, 49, 36, 0.9);
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .barber-table tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Trạng thái lịch */
+  .status-success {
+    color: #3ed75f;
+  }
+  .status-cancel {
+    color: #ff4d4d;
+  }
+  .status-pending {
+    color: #f1c232;
+  }
+  

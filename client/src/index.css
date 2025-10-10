@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth;
+}
+
+.hero-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/src/imgs/hero.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.hero2-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/src/imgs/salah-regouane-MRCdF3qUbp0-unsplash.jpg');
+    background-size: cover;
+    background-position: center;
+    /* width: 100%; */
+    /* height: 100%; */
+}
+
+.hero3-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/src/imgs/apothecary-87-Wg3J83R1YSQ-unsplash.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.card {
+    width: 300px;
+    height: 300px;
+    border: #c29e755b 1px solid;
+    border-radius: 8px;
+}
+
+.H-card {
+    width: 120px;
+    height: 200px;
+    border: #c29e755b 1px solid;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.H-card:hover {
+    background-color: #c29e75;
+    transition: all 0.5s ease-in-out;
+}
