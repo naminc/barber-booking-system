@@ -169,7 +169,7 @@ const Profile = () => {
               onClick={() => navigate("/booking")}
               className="barber-btn flex items-center justify-center gap-2 px-8 py-3 mx-auto"
             >
-              <FaCut />
+              <FaCut /> Đặt lịch mới
             </button>
           </div>
         </div>
