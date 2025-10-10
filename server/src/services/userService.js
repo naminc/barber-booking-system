@@ -16,3 +16,9 @@ exports.deleteUser = async (id) => {
   if (affected === 0) throw new Error("User not found");
   return { message: "User deleted successfully" };
 };
+
+exports.getProfile = async (userId) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found");
+  return user;
+};

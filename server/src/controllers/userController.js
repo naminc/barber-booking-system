@@ -39,3 +39,17 @@ exports.delete = async (req, res) => {
     res.status(500).json({ error: msg });
   }
 };
+
+exports.getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await userService.getProfile(userId);
+
+    res.json({
+      message: "User profile fetched successfully",
+      user,
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};

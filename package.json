@@ -1,5 +1,9 @@
 {
   "dependencies": {
-    "joi": "^18.0.1"
+    "axios": "^1.12.2",
+    "bootstrap": "^5.3.8",
+    "joi": "^18.0.1",
+    "react-bootstrap": "^2.10.10",
+    "react-router-dom": "^7.9.4"
   }
 }

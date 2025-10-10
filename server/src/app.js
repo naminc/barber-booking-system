@@ -4,6 +4,7 @@ const db = require('./config/db');
 
 const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.post('/api/echo', (req, res) => res.json({ received: req.body }));
 // Main routes
 app.use('/api/users', userRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/auth', authRoutes);
 
 module.exports = app;
