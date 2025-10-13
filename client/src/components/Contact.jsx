@@ -1,4 +1,5 @@
 import React from "react";
+import { FaPaperPlane } from "react-icons/fa";
 
 const Contact = () => {
   return (
@@ -62,8 +63,9 @@ const Contact = () => {
 
           <button
             type="submit"
-            className="mt-4 bg-gradient-to-r from-[#c29e75] to-[#a47e4f] text-black font-semibold uppercase py-2 px-6 rounded-full shadow-md hover:shadow-[#c29e75]/40 hover:scale-105 transition-all duration-300"
+            className="mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-[#c29e75] to-[#a47e4f] text-black font-semibold uppercase py-2 px-6 rounded-full shadow-md hover:shadow-[#c29e75]/40 hover:scale-105 transition-all duration-300"
           >
+            <FaPaperPlane className="text-lg" />
             Gửi liên hệ
           </button>
         </div>
