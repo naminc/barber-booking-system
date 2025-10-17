@@ -26,6 +26,9 @@ import AdminServices from "./pages/Admin/Services";
 import Bookings from "./pages/Admin/Bookings";
 import Users from "./pages/Admin/Users";
 import AddUser from "./pages/Admin/AddUser";
+import AddService from "./pages/Admin/AddService";
+import AddBooking from "./pages/Admin/AddBooking";
+import AddStaff from "./pages/Admin/AddStaff";
 import { BookingProvider } from "./context/BookingContext";
 import GuestRoute from "./routes/GuestRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -79,8 +82,11 @@ export default function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="settings" element={<Settings />} />
             <Route path="staff" element={<Staff />} />
+            <Route path="staff/add" element={<AddStaff />} />
             <Route path="services" element={<AdminServices />} />
+            <Route path="services/add" element={<AddService />} />
             <Route path="bookings" element={<Bookings />} />
+            <Route path="bookings/add" element={<AddBooking />} />
             <Route path="users" element={<Users />} />
             <Route path="users/add" element={<AddUser />} />
           </Route>

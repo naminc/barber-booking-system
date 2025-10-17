@@ -32,6 +32,8 @@ CREATE TABLE staff (
   name VARCHAR(100) NOT NULL,
   specialization VARCHAR(150),
   phone VARCHAR(20),
+  experience VARCHAR(50) COMMENT 'Kinh nghiệm làm việc',
+  image VARCHAR(255) COMMENT 'Đường dẫn hình ảnh',
   status ENUM('active','inactive') DEFAULT 'active',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -40,7 +42,9 @@ CREATE TABLE staff (
 -- Appointments table
 CREATE TABLE appointments (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT,
+  user_id INT NULL COMMENT 'ID của user đã đăng ký (có thể NULL nếu khách hàng chưa đăng ký)',
+  customer_name VARCHAR(100) NOT NULL COMMENT 'Tên khách hàng',
+  customer_phone VARCHAR(20) NOT NULL COMMENT 'Số điện thoại khách hàng',
   service_id INT,
   staff_id INT,
   appointment_date DATETIME,

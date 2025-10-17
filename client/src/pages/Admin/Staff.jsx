@@ -1,6 +1,8 @@
 import { Plus, Edit, Trash2, User, Phone, Mail, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Staff() {
+  const navigate = useNavigate();
   const staff = [
     {
       id: 1,
@@ -45,14 +47,13 @@ export default function Staff() {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Quản lý thợ 
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Quản lý thợ
-            </p>
+            <h1 className="text-2xl font-bold text-gray-900">Quản lý thợ</h1>
+            <p className="text-gray-600 mt-1">Quản lý thợ</p>
           </div>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          <button
+            onClick={() => navigate("/admin/staff/add")}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
             <Plus className="h-4 w-4" />
             Thêm thợ
           </button>
@@ -90,7 +91,9 @@ export default function Staff() {
               <User className="h-6 w-6 text-red-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Không hoạt động</p>
+              <p className="text-sm font-medium text-gray-600">
+                Không hoạt động
+              </p>
               <p className="text-2xl font-bold text-gray-900">
                 {staff.filter((s) => s.status === "inactive").length}
               </p>
@@ -108,7 +111,7 @@ export default function Staff() {
                   Thợ
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Chuyên môn
+                  Chuyên môn
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Kinh nghiệm
@@ -117,7 +120,7 @@ export default function Staff() {
                   Liên hệ
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Trạng thái
+                  Trạng thái
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Hành động

@@ -1,6 +1,8 @@
 import { Plus, Edit, Trash2, Scissors } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Services() {
+  const navigate = useNavigate();
   const services = [
     {
       id: 1,
@@ -40,11 +42,12 @@ export default function Services() {
             <h1 className="text-2xl font-bold text-gray-900">
               Quản lý dịch vụ
             </h1>
-            <p className="text-gray-600 mt-1">
-              Quản lý dịch vụ của cửa hàng
-            </p>
+            <p className="text-gray-600 mt-1">Quản lý dịch vụ của cửa hàng</p>
           </div>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          <button
+            onClick={() => navigate("/admin/services/add")}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
             <Plus className="h-4 w-4" />
             Thêm dịch vụ
           </button>
@@ -63,7 +66,7 @@ export default function Services() {
                   Giá
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Thời gian
+                  Thời gian
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Mô tả
