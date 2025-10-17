@@ -1,36 +1,49 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock, FaArrowLeft, FaSignInAlt } from "react-icons/fa";
+import authApi from "../api/authApi";
 import "../theme.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    if (!email || !password) {
-      setError("Vui lòng nhập đầy đủ Email và Mật khẩu.");
+    if (!email) {
+      setError("Trường email không được để trống.");
       return;
     }
-
+    if (!password) {
+      setError("Trường mật khẩu không được để trống.");
+      return;
+    }
     try {
       setLoading(true);
-      await new Promise((r) => setTimeout(r, 1000));
-      navigate("/");
-    } catch {
-      setError("Đăng nhập thất bại, vui lòng thử lại.");
+      const res = await authApi.login({ email, password });
+      if (res.token) {
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("user", JSON.stringify(res.user));
+        console.log(res.user);
+        navigate("/");
+      } else if (res.error) {
+        setError(res.error);
+      } else {
+        setError("Đăng nhập thất bại, vui lòng thử lại.");
+      }
+    } catch (err) {
+      if (err.error) setError(err.error);
+      else if (err.message) setError(err.message);
+      else setError("Có lỗi xảy ra, vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
   };
-
+  
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white px-4 sm:px-6 md:px-8">
       <Link
@@ -40,7 +53,6 @@ const Login = () => {
         <FaArrowLeft className="text-xs" />
         <span>Quay lại trang chủ</span>
       </Link>
-
       <div
         className="barber-box w-full max-w-sm sm:max-w-md bg-[#111]/90 backdrop-blur-md border border-[#c29e75]/30 
                rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.4)] p-6 sm:p-8 text-center"
@@ -62,9 +74,7 @@ const Login = () => {
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={onSubmit} className="space-y-5 text-left">
-          {/* Email */}
           <div>
             <label className="block text-sm font-semibold mb-2 text-[var(--color-gold)]">
               <FaEnvelope className="inline mr-2" /> Email
@@ -84,7 +94,7 @@ const Login = () => {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"}
+                type="password"
                 className="barber-input pl-5"
                 placeholder="••••••••"
                 value={password}

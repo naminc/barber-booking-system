@@ -1,9 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Menu, X, Search, LogOut } from "lucide-react";
+import { logout } from "../../utils/auth";
 
 export default function AdminNavbar({ onToggleSidebar, sidebarOpen }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    if (window.confirm("Bạn có chắc muốn đăng xuất?")) {
+      logout(navigate);
+    }
+  };
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
       <div className="px-4 sm:px-6 lg:px-8">
@@ -53,13 +60,13 @@ export default function AdminNavbar({ onToggleSidebar, sidebarOpen }) {
               </button>
               {showProfileMenu && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                  <a
-                    href="#"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                   >
                     <LogOut className="h-4 w-4 mr-3" />
                     Đăng xuất
-                  </a>
+                  </button>
                 </div>
               )}
             </div>

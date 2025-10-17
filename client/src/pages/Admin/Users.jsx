@@ -41,7 +41,7 @@ export default function Users() {
         name: "Trần Thị Bình",
         email: "binh.tran@email.com",
         phone: "0987654321",
-        role: "customer",
+        role: "admin",
         status: "active",
         joinDate: "2024-01-10",
         lastLogin: "2024-01-19",
@@ -53,7 +53,7 @@ export default function Users() {
         name: "Lê Văn Cường",
         email: "cuong.le@email.com",
         phone: "0369852147",
-        role: "staff",
+        role: "admin",
         status: "active",
         joinDate: "2023-12-01",
         lastLogin: "2024-01-20",
@@ -65,7 +65,7 @@ export default function Users() {
         name: "Phạm Thị Dung",
         email: "dung.pham@email.com",
         phone: "0741852963",
-        role: "customer",
+        role: "admin",
         status: "inactive",
         joinDate: "2023-11-20",
         lastLogin: "2023-12-15",
@@ -88,10 +88,9 @@ export default function Users() {
   const getRoleBadge = (role) => {
     const roleConfig = {
       customer: { text: "Khách hàng", color: "bg-blue-100 text-blue-800" },
-      staff: { text: "Nhân viên", color: "bg-green-100 text-green-800" },
-      admin: { text: "Quản trị", color: "bg-red-100 text-red-800" },
+      admin: { text: "Quản trị viên", color: "bg-green-100 text-green-800" },
     };
-    const config = roleConfig[role] || roleConfig.customer;
+    const config = roleConfig[role] || roleConfig.admin;
     return (
       <span
         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}
@@ -204,39 +203,6 @@ export default function Users() {
         </div>
       </div>
 
-      {/* Filters and Search */}
-      <div className="bg-white p-4 rounded-lg shadow mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Tìm kiếm theo tên, email, số điện thoại..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
-              />
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <select
-              value={filterRole}
-              onChange={(e) => setFilterRole(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
-            >
-              <option value="all">Tất cả vai trò</option>
-              <option value="customer">Khách hàng</option>
-              <option value="staff">Nhân viên</option>
-              <option value="admin">Quản trị</option>
-            </select>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              Lọc
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* Users Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">

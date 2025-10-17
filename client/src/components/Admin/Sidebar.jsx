@@ -30,10 +30,10 @@ export default function Sidebar({ isOpen, onClose }) {
       description: "Quản lý lịch hẹn",
     },
     {
-      name: "Nhân viên",
+      name: "Thợ",
       path: "/admin/staff",
       icon: Users,
-      description: "Quản lý nhân viên",
+      description: "Quản lý thợ",
     },
     {
       name: "Người dùng",

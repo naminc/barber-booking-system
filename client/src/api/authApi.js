@@ -1,9 +1,13 @@
-import axiosClient from './axiosClient';
+import axiosClient from "./axiosClient";
 
 const authApi = {
-  login: (data) => axiosClient.post('/auth/login', data),
-  register: (data) => axiosClient.post('/auth/register', data),
-  getProfile: () => axiosClient.get('/users/profile'),
+  login: (credentials) => axiosClient.post("/auth/login", credentials),
+  register: (data) => axiosClient.post("/auth/register", data),
+  getProfile: () => axiosClient.get("/users/profile"),
+  logout: () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  },
 };
 
-export default authApi;
+export default authApi; 

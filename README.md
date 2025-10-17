@@ -12,3 +12,9 @@ Built with **React.js**, **Node.js (Express)**, and **MySQL**.
 
 - **Admin site:** [https://naminc.app/admin](https://naminc.app/admin)  
   → Manage services, staff, and schedules in one dashboard.
+
+
+
+- **Admin account:**
+  → Username: admin@naminc.dev
+  → Password: naminc

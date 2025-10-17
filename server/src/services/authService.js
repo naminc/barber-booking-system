@@ -7,16 +7,15 @@ exports.register = async (data) => {
 
   const existingUser = await User.findByEmail(email);
   if (existingUser) {
-    throw new Error("Email already registered");
+    throw new Error("Email đã được đăng ký");
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-
   const newUser = await User.create({
     name,
     email,
     password: hashedPassword,
     phone,
-    role: role || "customer",
+    role: role || "user",
   });
 
   const token = jwt.sign(
@@ -29,18 +28,15 @@ exports.register = async (data) => {
 
 exports.login = async (email, password) => {
   const user = await User.findByEmail(email);
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error("Tài khoản không tồn tại");
 
   const valid = await bcrypt.compare(password, user.password);
-  if (!valid) throw new Error("Invalid credentials");
+  if (!valid) throw new Error("Mật khẩu không chính xác");
   delete user.password;
-
   const token = jwt.sign(
     { id: user.id, email: user.email, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES || "7d" }
   );
-
   return { user, token };
 };
-

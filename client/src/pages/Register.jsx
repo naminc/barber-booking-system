@@ -14,13 +14,10 @@ import "../theme.css";
 const Register = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "",
+    fullname: "",
     email: "",
     password: "",
-    confirm: "",
   });
-  const [showPass, setShowPass] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,15 +29,10 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
-    if (!form.name || !form.email || !form.password || !form.confirm) {
+    if (!form.fullname || !form.email || !form.password) {
       setError("Vui lòng nhập đầy đủ thông tin.");
       return;
     }
-    if (form.password !== form.confirm) {
-      setError("Mật khẩu xác nhận không khớp.");
-      return;
-    }
-
     try {
       setLoading(true);
       await new Promise((r) => setTimeout(r, 1000));
@@ -90,11 +82,11 @@ const Register = () => {
             </label>
             <div className="relative">
               <input
-                name="name"
+                name="fullname"
                 type="text"
                 className="barber-input pl-5"
                 placeholder="Nguyễn Văn B"
-                value={form.name}
+                value={form.fullname}
                 onChange={handleChange}
               />
             </div>
@@ -122,27 +114,10 @@ const Register = () => {
             <div className="relative">
               <input
                 name="password"
-                type={showPass ? "text" : "password"}
+                type="password"
                 className="barber-input pl-5"
                 placeholder="••••••••"
                 value={form.password}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* Xác nhận mật khẩu */}
-          <div>
-            <label className="block text-sm font-semibold mb-2 text-[var(--color-gold)]">
-              <FaLock className="inline mr-2" /> Xác nhận mật khẩu
-            </label>
-            <div className="relative">
-              <input
-                name="confirm"
-                type={showConfirm ? "text" : "password"}
-                className="barber-input pl-5"
-                placeholder="••••••••"
-                value={form.confirm}
                 onChange={handleChange}
               />
             </div>

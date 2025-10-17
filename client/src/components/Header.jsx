@@ -1,10 +1,45 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  FaBars,
+  FaTimes,
+  FaUserCircle,
+  FaSignOutAlt,
+  FaSignInAlt,
+  FaUserPlus,
+} from "react-icons/fa";
+import { logout } from "../utils/auth";
 
 const Header = () => {
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const dropdownRef = useRef(null);
+
+  // Lấy user từ localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
+
+  // Click ra ngoài thì đóng dropdown
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    if (window.confirm("Bạn có chắc muốn đăng xuất?")) {
+      logout(navigate);
+    }
+  };
 
   const scrollToSection = (id) => {
     const section = document.querySelector(id);
@@ -17,6 +52,7 @@ const Header = () => {
   return (
     <header className="bg-[#1a1a1a]/95 text-[#c29e75] py-4 shadow-md fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
       <div className="container mx-auto flex items-center justify-between px-6">
+        {/* Logo */}
         <Link
           to="/"
           className="font-bold text-xl hover:text-white transition-all duration-200"
@@ -25,6 +61,7 @@ const Header = () => {
           NAMINC BARBER
         </Link>
 
+        {/* Nút menu mobile */}
         <button
           className="md:hidden text-2xl text-[#c29e75] hover:text-white transition-all"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -32,105 +69,101 @@ const Header = () => {
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
 
-        {/* Menu (desktop) */}
-        <ul className="hidden md:flex gap-8 text-sm font-semibold">
-          <li>
-            <Link
-              to="/"
-              onClick={(e) => {
-                if (pathname === "/") {
-                  e.preventDefault();
-                  scrollToSection("body");
-                }
-              }}
-              className="hover:text-white transition-all"
+        {/* Menu desktop */}
+        <ul className="hidden md:flex gap-8 text-sm font-semibold items-center">
+          {[
+            { id: "body", label: "TRANG CHỦ" },
+            { id: "#about", label: "VỀ CHÚNG TÔI" },
+            { id: "#services", label: "DỊCH VỤ" },
+            { id: "#hours", label: "GIỜ LÀM VIỆC" },
+            { id: "#prices", label: "BẢNG GIÁ" },
+            { id: "#contact", label: "LIÊN HỆ" },
+          ].map((item) => (
+            <li key={item.id}>
+              <Link
+                to="/"
+                onClick={(e) => {
+                  if (pathname === "/") {
+                    e.preventDefault();
+                    scrollToSection(item.id);
+                  }
+                }}
+                className="hover:text-white transition-all"
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+          {user && (
+            <>
+              <li>
+                <Link to="/booking" className="hover:text-white transition-all">
+                  ĐẶT LỊCH
+                </Link>
+              </li>
+              <li>
+                <Link to="/review" className="hover:text-white transition-all">
+                  ĐÁNH GIÁ
+                </Link>
+              </li>
+            </>
+          )}
+
+          {/* Dropdown tài khoản */}
+          <li className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="flex items-center gap-2 hover:text-white transition-all"
             >
-              TRANG CHỦ
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/"
-              onClick={(e) => {
-                if (pathname === "/") {
-                  e.preventDefault();
-                  scrollToSection("#about");
-                }
-              }}
-              className="hover:text-white transition-all"
-            >
-              VỀ CHÚNG TÔI
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/"
-              onClick={(e) => {
-                if (pathname === "/") {
-                  e.preventDefault();
-                  scrollToSection("#services");
-                }
-              }}
-              className="hover:text-white transition-all"
-            >
-              DỊCH VỤ
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/"
-              onClick={(e) => {
-                if (pathname === "/") {
-                  e.preventDefault();
-                  scrollToSection("#hours");
-                }
-              }}
-              className="hover:text-white transition-all"
-            >
-              GIỜ LÀM VIỆC
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/"
-              onClick={(e) => {
-                if (pathname === "/") {
-                  e.preventDefault();
-                  scrollToSection("#prices");
-                }
-              }}
-              className="hover:text-white transition-all"
-            >
-              BẢNG GIÁ
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/"
-              onClick={(e) => {
-                if (pathname === "/") {
-                  e.preventDefault();
-                  scrollToSection("#contact");
-                }
-              }}
-              className="hover:text-white transition-all"
-            >
-              LIÊN HỆ
-            </Link>
-          </li>
-          <li>
-            <Link to="/login" className="hover:text-white transition-all">
-              ĐĂNG NHẬP
-            </Link>
-          </li>
-          <li>
-            <Link to="/profile" className="hover:text-white transition-all">
+              {" "}
               TÀI KHOẢN
-            </Link>
+            </button>
+
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-3 bg-[#111] border border-[#c29e75]/30 rounded-xl shadow-lg w-48 py-2 z-50 animate-fadeIn">
+                {!user ? (
+                  <>
+                    <Link
+                      to="/login"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
+                    >
+                      <FaSignInAlt /> Đăng nhập
+                    </Link>
+                    <Link
+                      to="/register"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
+                    >
+                      <FaUserPlus /> Đăng ký
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <div className="px-4 py-2 border-b border-[#c29e75]/20 text-sm text-[#e5d1aa]">
+                      👋 {user.name}
+                    </div>
+                    <Link
+                      to="/profile"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
+                    >
+                      <FaUserCircle /> Hồ sơ
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
+                    >
+                      <FaSignOutAlt /> Đăng xuất
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </li>
         </ul>
 
-        {/* Menu (mobile) */}
+        {/* Menu mobile */}
         {menuOpen && (
           <div className="absolute top-[70px] left-0 w-full bg-[#1a1a1a]/95 border-t border-[#c29e75]/20 shadow-lg md:hidden">
             <ul className="flex flex-col items-center gap-4 py-6 text-sm font-semibold">
@@ -149,7 +182,8 @@ const Header = () => {
                       if (pathname === "/") {
                         e.preventDefault();
                         scrollToSection(item.id);
-                      } else setMenuOpen(false);
+                      }
+                      setMenuOpen(false);
                     }}
                     className="hover:text-white transition-all"
                   >
@@ -160,22 +194,68 @@ const Header = () => {
 
               <li>
                 <Link
-                  to="/login"
+                  to="/booking"
                   onClick={() => setMenuOpen(false)}
                   className="hover:text-white transition-all"
                 >
-                  ĐĂNG NHẬP
+                  ĐẶT LỊCH
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/profile"
+                  to="/review"
                   onClick={() => setMenuOpen(false)}
                   className="hover:text-white transition-all"
                 >
-                  TÀI KHOẢN
+                  ĐÁNH GIÁ
                 </Link>
               </li>
+
+              {!user ? (
+                <>
+                  <li>
+                    <Link
+                      to="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="hover:text-white transition-all"
+                    >
+                      ĐĂNG NHẬP
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/register"
+                      onClick={() => setMenuOpen(false)}
+                      className="hover:text-white transition-all"
+                    >
+                      ĐĂNG KÝ
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      to="/profile"
+                      onClick={() => setMenuOpen(false)}
+                      className="hover:text-white transition-all"
+                    >
+                      HỒ SƠ
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setMenuOpen(false);
+                      }}
+                      className="hover:text-white transition-all"
+                    >
+                      ĐĂNG XUẤT
+                    </button>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         )}

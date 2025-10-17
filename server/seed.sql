@@ -33,3 +33,8 @@ VALUES
 (1, 1, 1, '2025-10-12 09:00:00', 'confirmed', 'Khách quen, cắt ngắn gọn'),
 (2, 2, 3, '2025-10-13 14:30:00', 'pending', 'Gội đầu thư giãn'),
 (3, 3, 2, '2025-10-14 16:00:00', 'completed', 'Nhuộm màu nâu tây');
+
+
+INSERT INTO settings (title, keywords, description, domain, owner, email, phone, address)
+VALUES
+('Barber Booking', 'barber, booking, hair, salon, cắt tóc nam, đặt lịch', 'Professional barber booking platform for modern salons', 'http://localhost:5173', 'Ngo Dinh Nam', 'admin@naminc.dev', '0909090909', '615 Âu Cơ, Phú Trung, Tân Phú, TP.HCM');
