@@ -11,7 +11,7 @@ const Service = {
   },
   async create(data) {
     const [result] = await db.query("INSERT INTO services SET ?", [data]);
-    return result.insertId;
+    return { id: result.insertId, ...data };
   },
   async update(id, data) {
     const [result] = await db.query("UPDATE services SET ? WHERE id = ?", [

@@ -7,7 +7,7 @@ const staffRoutes = require("./routes/staffRoutes");
 const authRoutes = require("./routes/authRoutes");
 const settingRoutes = require("./routes/settingRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
-
+const serviceRoutes = require("./routes/serviceRoutes");
 const app = express();
 
 // Middleware
@@ -27,5 +27,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/staff", staffRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/settings", settingRoutes);
+app.use("/api/services", serviceRoutes);
 
 module.exports = app;
