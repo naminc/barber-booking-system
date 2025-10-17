@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Filter,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 
 export default function Users() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("all");
@@ -140,7 +142,10 @@ export default function Users() {
               Quản lý thông tin khách hàng và nhân viên
             </p>
           </div>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          <button
+            onClick={() => navigate("/admin/users/add")}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
             <UserPlus className="h-4 w-4" />
             Thêm người dùng
           </button>
@@ -202,7 +207,6 @@ export default function Users() {
           </div>
         </div>
       </div>
-
 
       {/* Users Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
