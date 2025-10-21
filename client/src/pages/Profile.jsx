@@ -9,48 +9,85 @@ import {
 } from "react-icons/fa";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
+import authApi from "../api/authApi";
+import { logout } from "../utils/auth";
 import "../theme.css";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@example.com",
-    phone: "0987 654 321",
+    name: "",
+    email: "",
+    phone: "",
     avatar: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    role: "",
   });
 
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fakeData = [
-      {
-        id: 1,
-        date: "2025-10-01",
-        time: "14:30",
-        service: "Cắt tóc nam + gội đầu",
-        barber: "Anh Hưng Barber",
-        status: "Hoàn thành",
-      },
-      {
-        id: 2,
-        date: "2025-09-21",
-        time: "16:00",
-        service: "Cạo râu + xả stress",
-        barber: "Anh Tuấn",
-        status: "Đã hủy",
-      },
-      {
-        id: 3,
-        date: "2025-09-10",
-        time: "10:00",
-        service: "Cắt tóc cao cấp",
-        barber: "Anh Hưng Barber",
-        status: "Hoàn thành",
-      },
-    ];
-    setBookings(fakeData);
-  }, []);
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+        const response = await authApi.getProfile();
+        if (response && response.user) {
+          setUser({
+            name: response.user.name || "",
+            email: response.user.email || "",
+            phone: response.user.phone || "",
+            avatar: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+            role: response.user.role || "",
+          });
+        }
+        setBookings([]);
+        
+      } catch (err) {
+        console.error("Lỗi khi tải thông tin người dùng:", err);
+        setError("Không thể tải thông tin người dùng");
+        if (err.response && err.response.status === 401) {
+          logout(navigate);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserData();
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
+        <Header />
+        <div className="px-4 py-24 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[var(--color-gold)] mx-auto"></div>
+            <p className="text-gray-400 mt-4">Đang tải thông tin...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
+        <Header />
+        <div className="px-4 py-24 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-400 text-lg">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="barber-btn mt-4 px-6 py-2"
+            >
+              Thử lại
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
@@ -67,7 +104,7 @@ const Profile = () => {
                   className="w-28 h-28 rounded-full border-2 border-[var(--color-gold)] shadow-[0_0_20px_rgba(194,158,117,0.3)] object-cover"
                 />
                 <span className="absolute -bottom-1 -right-1 bg-[var(--color-gold)] text-black text-xs font-semibold px-2 py-0.5 rounded-full">
-                  {user.name.split(" ")[1] || "User"}
+                  {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                 </span>
               </div>
 
@@ -81,7 +118,7 @@ const Profile = () => {
                 </p>
                 <p className="flex items-center gap-2 text-gray-300 mt-1">
                   <FaPhoneAlt className="text-[var(--color-gold)]" />{" "}
-                  {user.phone}
+                  {user.phone || "Không có số điện thoại"}
                 </p>
               </div>
             </div>

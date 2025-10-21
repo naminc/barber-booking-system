@@ -127,15 +127,13 @@ const Header = () => {
                       to="/login"
                       onClick={() => setDropdownOpen(false)}
                       className="flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
-                    >
-                      <FaSignInAlt /> Đăng nhập
+                    >Đăng nhập
                     </Link>
                     <Link
                       to="/register"
                       onClick={() => setDropdownOpen(false)}
                       className="flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
-                    >
-                      <FaUserPlus /> Đăng ký
+                    >Đăng ký
                     </Link>
                   </>
                 ) : (
@@ -147,14 +145,12 @@ const Header = () => {
                       to="/profile"
                       onClick={() => setDropdownOpen(false)}
                       className="flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
-                    >
-                      <FaUserCircle /> Hồ sơ
+                    >Hồ sơ
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="w-full text-left flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
-                    >
-                      <FaSignOutAlt /> Đăng xuất
+                    >Đăng xuất
                     </button>
                   </>
                 )}

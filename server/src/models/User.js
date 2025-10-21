@@ -15,10 +15,10 @@ const User = {
     return rows[0] || null;
   },
 
-  async create({ name, email, password, phone, role }) {
-    const sql = `INSERT INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, ?)`;
-    const [result] = await db.query(sql, [name, email, password, phone, role]);
-    return { id: result.insertId, name, email, phone, role };
+  async create({ name, email, password, role }) {
+    const sql = `INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)`;
+    const [result] = await db.query(sql, [name, email, password, role]);
+    return { id: result.insertId, name, email, role };
   },
 
   async delete(id) {

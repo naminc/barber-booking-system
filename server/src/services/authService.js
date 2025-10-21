@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 exports.register = async (data) => {
-  const { name, email, password, phone, role } = data;
+  const { name, email, password, role } = data;
 
   const existingUser = await User.findByEmail(email);
   if (existingUser) {
@@ -14,12 +14,11 @@ exports.register = async (data) => {
     name,
     email,
     password: hashedPassword,
-    phone,
     role: role || "user",
   });
 
   const token = jwt.sign(
-    { id: newUser.id, email: newUser.email, role: newUser.role },
+    { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES || "7d" }
   );
@@ -34,7 +33,7 @@ exports.login = async (email, password) => {
   if (!valid) throw new Error("Mật khẩu không chính xác");
   delete user.password;
   const token = jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
+    { id: user.id, name: user.name, email: user.email, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES || "7d" }
   );

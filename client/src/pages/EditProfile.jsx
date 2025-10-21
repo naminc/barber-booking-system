@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import authApi from "../api/authApi";
+import { logout } from "../utils/auth";
 import {
   FaUser,
   FaEnvelope,
@@ -11,16 +14,50 @@ import {
 import "../theme.css";
 
 const EditProfile = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@example.com",
-    phone: "0987 654 321",
+    name: "",
+    email: "",
+    phone: "",
     password: "",
   });
 
   const [avatar, setAvatar] = useState(
     "https://cdn-icons-png.flaticon.com/512/149/149071.png"
   );
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+        const response = await authApi.getProfile();
+        
+        if (response && response.user) {
+          setForm({
+            name: response.user.name || "",
+            email: response.user.email || "",
+            phone: response.user.phone || "",
+            password: "",
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setError("Không thể tải thông tin người dùng");
+        
+        // If unauthorized, redirect to login
+        if (err.response && err.response.status === 401) {
+          logout(navigate);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -40,6 +77,39 @@ const EditProfile = () => {
     e.preventDefault();
     alert("Cập nhật thông tin thành công!");
   };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
+        <Header />
+        <div className="px-4 py-24 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[var(--color-gold)] mx-auto"></div>
+            <p className="text-gray-400 mt-4">Đang tải thông tin...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
+        <Header />
+        <div className="px-4 py-24 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-400 text-lg">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="barber-btn mt-4 px-6 py-2"
+            >
+              Thử lại
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">

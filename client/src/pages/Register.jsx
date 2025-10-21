@@ -5,40 +5,51 @@ import {
   FaLock,
   FaUser,
   FaArrowLeft,
-  FaEye,
-  FaEyeSlash,
   FaUserPlus,
 } from "react-icons/fa";
+import authApi from "../api/authApi";
 import "../theme.css";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    fullname: "",
-    email: "",
-    password: "",
-  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    if (!form.fullname || !form.email || !form.password) {
-      setError("Vui lòng nhập đầy đủ thông tin.");
+    if (!name) {
+      setError("Trường họ tên không được để trống.");
+      return;
+    }
+    if (!email) {
+      setError("Trường email không được để trống.");
+      return;
+    }
+    if (!password) {
+      setError("Trường mật khẩu không được để trống.");
       return;
     }
     try {
       setLoading(true);
-      await new Promise((r) => setTimeout(r, 1000));
-      navigate("/login");
-    } catch {
-      setError("Đăng ký thất bại, vui lòng thử lại.");
+      const res = await authApi.register({ name, email, password });
+      if (res.token) {
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("user", JSON.stringify(res.user));
+        console.log(res.user);
+        navigate("/");
+      } else if (res.error) {
+        setError(res.error);
+      } else {
+        setError("Đăng ký thất bại, vui lòng thử lại.");
+      }
+    } catch (err) {
+      if (err.error) setError(err.error);
+      else if (err.message) setError(err.message);
+      else setError("Có lỗi xảy ra, vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -75,36 +86,31 @@ const Register = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5 text-left">
+        <form onSubmit={onSubmit} className="space-y-5 text-left">
           <div>
             <label className="block text-sm font-semibold mb-2 text-[var(--color-gold)]">
-              <FaUser className="inline mr-2" /> Họ tên
+              <FaUser className="inline mr-2" /> Họ và tên
             </label>
-            <div className="relative">
-              <input
-                name="fullname"
-                type="text"
-                className="barber-input pl-5"
-                placeholder="Nguyễn Văn B"
-                value={form.fullname}
-                onChange={handleChange}
-              />
-            </div>
+            <input
+              type="text"
+              className="barber-input pl-5"
+              placeholder="Nhập họ và tên"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </div>
+
           <div>
             <label className="block text-sm font-semibold mb-2 text-[var(--color-gold)]">
               <FaEnvelope className="inline mr-2" /> Email
             </label>
-            <div className="relative">
-              <input
-                name="email"
-                type="email"
-                className="barber-input pl-5"
-                placeholder="you@gmail.com"
-                value={form.email}
-                onChange={handleChange}
-              />
-            </div>
+            <input
+              type="email"
+              className="barber-input pl-5"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
 
           <div>
@@ -113,12 +119,11 @@ const Register = () => {
             </label>
             <div className="relative">
               <input
-                name="password"
                 type="password"
                 className="barber-input pl-5"
                 placeholder="••••••••"
-                value={form.password}
-                onChange={handleChange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
@@ -126,7 +131,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="barber-btn w-full flex items-center justify-center gap-2 disabled:opacity-60"
+            className="barber-btn w-full mt-2 disabled:opacity-60 flex items-center justify-center gap-2"
           >
             <FaUserPlus className="text-base" />
             {loading ? "Đang đăng ký..." : "Đăng ký"}
@@ -139,6 +144,13 @@ const Register = () => {
             </Link>
           </p>
         </form>
+
+        <div className="mt-8 text-center text-sm border-t border-[rgba(194,158,117,0.2)] pt-4">
+          <span>Hoặc đặt lịch nhanh: </span>
+          <a href="tel:+84347101143" className="barber-link font-semibold">
+            +84 347 101 143
+          </a>
+        </div>
       </div>
     </main>
   );
