@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaEnvelope,
@@ -7,51 +7,32 @@ import {
   FaArrowLeft,
   FaUserPlus,
 } from "react-icons/fa";
-import authApi from "../api/authApi";
+import { useForm, useAuth, useNotification } from "../hooks";
 import "../theme.css";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  
+  // Custom hooks
+  const { values: form, handleChange } = useForm({
+    name: "",
+    email: "",
+    password: "",
+  });
+  
+  const { loading, register } = useAuth();
+  const { error, showError, clearNotifications } = useNotification();
 
+  // Handle form submission
   const onSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    if (!name) {
-      setError("Trường họ tên không được để trống.");
-      return;
-    }
-    if (!email) {
-      setError("Trường email không được để trống.");
-      return;
-    }
-    if (!password) {
-      setError("Trường mật khẩu không được để trống.");
-      return;
-    }
+    clearNotifications();
+
     try {
-      setLoading(true);
-      const res = await authApi.register({ name, email, password });
-      if (res.token) {
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("user", JSON.stringify(res.user));
-        console.log(res.user);
-        navigate("/");
-      } else if (res.error) {
-        setError(res.error);
-      } else {
-        setError("Đăng ký thất bại, vui lòng thử lại.");
-      }
+      await register(form);
+      navigate("/");
     } catch (err) {
-      if (err.error) setError(err.error);
-      else if (err.message) setError(err.message);
-      else setError("Có lỗi xảy ra, vui lòng thử lại.");
-    } finally {
-      setLoading(false);
+      showError(err.error || "Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
 
@@ -93,10 +74,11 @@ const Register = () => {
             </label>
             <input
               type="text"
+              name="name"
               className="barber-input pl-5"
               placeholder="Nhập họ và tên"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={form.name}
+              onChange={handleChange}
             />
           </div>
 
@@ -106,10 +88,11 @@ const Register = () => {
             </label>
             <input
               type="email"
+              name="email"
               className="barber-input pl-5"
               placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={handleChange}
             />
           </div>
 
@@ -120,10 +103,11 @@ const Register = () => {
             <div className="relative">
               <input
                 type="password"
+                name="password"
                 className="barber-input pl-5"
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={form.password}
+                onChange={handleChange}
               />
             </div>
           </div>

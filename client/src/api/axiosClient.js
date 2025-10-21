@@ -19,7 +19,14 @@ axiosClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
     console.error("Lỗi API:", error.response?.data || error.message);
-    return Promise.reject(error.response?.data || error);
+    
+    // If we have a response from server, reject with the error structure
+    if (error.response) {
+      return Promise.reject(error);
+    }
+    
+    // For network errors or other errors without response
+    return Promise.reject(error);
   }
 );
 

@@ -1,49 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock, FaArrowLeft, FaSignInAlt } from "react-icons/fa";
-import authApi from "../api/authApi";
+import { useForm, useAuth, useNotification } from "../hooks";
 import "../theme.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
+  const { values: form, handleChange } = useForm({
+    email: "",
+    password: "",
+  });
+  const { loading, login } = useAuth();
+  const { error, showError, clearNotifications } = useNotification();
   const onSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    if (!email) {
-      setError("Trường email không được để trống.");
-      return;
-    }
-    if (!password) {
-      setError("Trường mật khẩu không được để trống.");
-      return;
-    }
+    clearNotifications();
     try {
-      setLoading(true);
-      const res = await authApi.login({ email, password });
-      if (res.token) {
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("user", JSON.stringify(res.user));
-        console.log(res.user);
-        navigate("/");
-      } else if (res.error) {
-        setError(res.error);
-      } else {
-        setError("Đăng nhập thất bại, vui lòng thử lại.");
-      }
+      await login(form);
+      navigate("/");
     } catch (err) {
-      if (err.error) setError(err.error);
-      else if (err.message) setError(err.message);
-      else setError("Có lỗi xảy ra, vui lòng thử lại.");
-    } finally {
-      setLoading(false);
+      showError(err.error || "Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
-  
+
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white px-4 sm:px-6 md:px-8">
       <Link
@@ -81,10 +60,11 @@ const Login = () => {
             </label>
             <input
               type="email"
+              name="email"
               className="barber-input pl-5"
               placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={handleChange}
             />
           </div>
 
@@ -95,10 +75,11 @@ const Login = () => {
             <div className="relative">
               <input
                 type="password"
+                name="password"
                 className="barber-input pl-5"
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={form.password}
+                onChange={handleChange}
               />
             </div>
           </div>

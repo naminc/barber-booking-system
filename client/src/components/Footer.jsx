@@ -1,7 +1,14 @@
 import React from "react";
 import { FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
+import { useSettingsContext } from "../context/SettingsContext";
 
 const Footer = () => {
+  const { getSetting } = useSettingsContext();
+
+  const shopTitle = getSetting("title");
+  const shopOwner = getSetting("owner");
+  const description = getSetting("description");
+
   return (
     <footer
       id="footer"
@@ -9,11 +16,11 @@ const Footer = () => {
     >
       <div className="w-full text-center py-10 flex flex-col items-center gap-5">
         <p className="text-[#c29e75] text-lg font-semibold font-RobotoCondensed tracking-wide">
-          Phong cách – Tinh tế – Đẳng cấp Barber Việt
+          {description}
         </p>
         <p className="text-gray-300 text-sm">
-          © {new Date().getFullYear()} NAMINC BARBER. Mọi quyền được bảo lưu.{" "}
-          <br className="md:hidden" />
+          © {new Date().getFullYear()} {shopTitle}
+          {" . "}
           Thiết kế bởi{" "}
           <a
             href="https://naminc.dev"
@@ -21,7 +28,7 @@ const Footer = () => {
             rel="noopener noreferrer"
             className="text-[#c29e75] hover:text-[#e8c891] transition-all duration-300"
           >
-            @naminc
+            @{shopOwner}
           </a>
         </p>
 

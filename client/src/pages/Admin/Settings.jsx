@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Save,
   Settings as SettingsIcon,
@@ -6,60 +6,87 @@ import {
   Tag,
   Link,
   Phone,
+  RefreshCw,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import { useSettingsContext } from "../../context/SettingsContext";
 
 export default function Settings() {
-  const [form, setForm] = useState({
-    title: "Barber Booking",
-    keywords: "barber, booking, hair, salon, cắt tóc nam, đặt lịch",
-    domain: "http://localhost:5173",
-    description: "Professional barber booking platform for modern salons",
-    owner: "Ngo Dinh Nam",
-    phone: "+84 909 090 909",
-    email: "admin@naminc.dev",
-    address: "615 Âu Cơ, Phú Trung, Tân Phú, TP.HCM",
-  });
+  const {
+    settings: contextSettings,
+    loading,
+    error,
+    updateSettings: updateContextSettings,
+    fetchSettings,
+  } = useSettingsContext();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [settings, setSettings] = useState({});
+  const [initialSettings, setInitialSettings] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+
+  // Sync context settings to local state
+  useEffect(() => {
+    if (contextSettings) {
+      setSettings(contextSettings);
+      setInitialSettings(contextSettings);
+    }
+  }, [contextSettings]);
+
+  const hasChanges = () => {
+    return JSON.stringify(settings) !== JSON.stringify(initialSettings);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setSettings({ ...settings, [name]: value });
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      setSubmitting(true);
+      await updateContextSettings(settings);
+      setInitialSettings(settings);
+      await fetchSettings(); // Refresh settings in context
       toast.success("Cập nhật thành công!");
-    } catch (error) {
-      toast.error("Cập nhật thất bại. Vui lòng thử lại.");
+    } catch (err) {
+      toast.error(err.message || "Cập nhật thất bại. Vui lòng thử lại.");
     } finally {
-      setIsLoading(false);
+      setSubmitting(false);
     }
   };
 
-  const handleReset = () => {
-    setForm({
-      title: "Barber Booking",
-      keywords: "barber, booking, hair, salon, cắt tóc nam, đặt lịch",
-      domain: "http://localhost:5173",
-      description: "Professional barber booking platform for modern salons",
-      phone: "+84 909 090 909",
-      email: "admin@naminc.dev",
-      owner: "Ngo Dinh Nam",
-      address: "615 Âu Cơ, Phú Trung, Tân Phú, TP.HCM",
-    });
-    toast.success("Đặt lại thành công");
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <RefreshCw className="h-12 w-12 text-blue-600 animate-spin" />
+          <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <div className="text-red-500 text-lg font-semibold">{error}</div>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Tải lại trang
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <Toaster />
+      <Toaster position="top-right" />
 
       {/* Header */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -98,10 +125,11 @@ export default function Settings() {
               type="text"
               id="title"
               name="title"
-              value={form.title}
+              value={settings.title || ""}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="Nhập tiêu đề website..."
+              required
             />
             <p className="mt-1 text-sm text-gray-500">
               Đây sẽ là tiêu đề của trang web trong các tab và kết quả tìm kiếm
@@ -122,7 +150,7 @@ export default function Settings() {
               id="keywords"
               name="keywords"
               rows={3}
-              value={form.keywords}
+              value={settings.keywords || ""}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="barber, salon, haircut, booking, cắt tóc nam, đặt lịch..."
@@ -143,7 +171,7 @@ export default function Settings() {
               id="description"
               name="description"
               rows={2}
-              value={form.description}
+              value={settings.description || ""}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="Mô tả ngắn về website..."
@@ -168,7 +196,7 @@ export default function Settings() {
               type="url"
               id="domain"
               name="domain"
-              value={form.domain}
+              value={settings.domain || ""}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="https://naminc.dev"
@@ -204,7 +232,7 @@ export default function Settings() {
               type="tel"
               id="phone"
               name="phone"
-              value={form.phone}
+              value={settings.phone || ""}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="+84 909 090 909"
@@ -223,7 +251,7 @@ export default function Settings() {
               type="email"
               id="email"
               name="email"
-              value={form.email}
+              value={settings.email || ""}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="info@naminc.dev"
@@ -242,7 +270,7 @@ export default function Settings() {
               id="address"
               name="address"
               rows={2}
-              value={form.address}
+              value={settings.address || ""}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="615 Âu Cơ, Phú Trung, Tân Phú, TP.HCM"
@@ -260,7 +288,7 @@ export default function Settings() {
               type="text"
               id="owner"
               name="owner"
-              value={form.owner}
+              value={settings.owner || ""}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="Ngo Dinh Nam"
@@ -271,22 +299,14 @@ export default function Settings() {
 
       {/* Action Buttons */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={handleReset}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
-          >
-            Đặt lại mặc định
-          </button>
-
+        <div className="flex items-center justify-end">
           <button
             type="submit"
             onClick={handleSave}
-            disabled={isLoading}
+            disabled={submitting || !hasChanges()}
             className="flex items-center px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? (
+            {submitting ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 Đang lưu...

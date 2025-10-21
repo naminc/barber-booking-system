@@ -24,12 +24,14 @@ import Settings from "./pages/Admin/Settings";
 import Staff from "./pages/Admin/Staff";
 import AdminServices from "./pages/Admin/Services";
 import Bookings from "./pages/Admin/Bookings";
-import Users from "./pages/Admin/Users";
-import AddUser from "./pages/Admin/AddUser";
+import Users from "./pages/Admin/UserManagement/Users";
+import AddUser from "./pages/Admin/UserManagement/AddUser";
+import EditUser from "./pages/Admin/UserManagement/EditUser";
 import AddService from "./pages/Admin/AddService";
 import AddBooking from "./pages/Admin/AddBooking";
 import AddStaff from "./pages/Admin/AddStaff";
 import { BookingProvider } from "./context/BookingContext";
+import { SettingsProvider } from "./context/SettingsContext";
 import GuestRoute from "./routes/GuestRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Forbidden from "./pages/Forbidden";
@@ -55,44 +57,47 @@ function Home() {
 
 export default function App() {
   return (
-    <BookingProvider>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route element={<GuestRoute />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-        </Route>
-        <Route element={<ProtectedRoute roles={["user", "admin"]} />}>
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/booking" element={<Booking />} />
-          <Route path="/booking/select-service" element={<SelectService />} />
-          <Route path="/booking/select-barber" element={<SelectBarber />} />
-          <Route path="/booking/select-time" element={<SelectTime />} />
-          <Route
-            path="/booking/confirmation"
-            element={<BookingConfirmation />}
-          />
-          <Route path="/review" element={<Review />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
-        </Route>
-        <Route element={<ProtectedRoute roles={["admin"]} />}>
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="staff" element={<Staff />} />
-            <Route path="staff/add" element={<AddStaff />} />
-            <Route path="services" element={<AdminServices />} />
-            <Route path="services/add" element={<AddService />} />
-            <Route path="bookings" element={<Bookings />} />
-            <Route path="bookings/add" element={<AddBooking />} />
-            <Route path="users" element={<Users />} />
-            <Route path="users/add" element={<AddUser />} />
+    <SettingsProvider>
+      <BookingProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route element={<GuestRoute />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
           </Route>
-        </Route>
-        <Route path="/403" element={<Forbidden />} />
-      </Routes>
-    </BookingProvider>
+          <Route element={<ProtectedRoute roles={["user", "admin"]} />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/booking" element={<Booking />} />
+            <Route path="/booking/select-service" element={<SelectService />} />
+            <Route path="/booking/select-barber" element={<SelectBarber />} />
+            <Route path="/booking/select-time" element={<SelectTime />} />
+            <Route
+              path="/booking/confirmation"
+              element={<BookingConfirmation />}
+            />
+            <Route path="/review" element={<Review />} />
+            <Route path="/edit-profile" element={<EditProfile />} />
+          </Route>
+          <Route element={<ProtectedRoute roles={["admin"]} />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="staff" element={<Staff />} />
+              <Route path="staff/add" element={<AddStaff />} />
+              <Route path="services" element={<AdminServices />} />
+              <Route path="services/add" element={<AddService />} />
+              <Route path="bookings" element={<Bookings />} />
+              <Route path="bookings/add" element={<AddBooking />} />
+              <Route path="users" element={<Users />} />
+              <Route path="users/add" element={<AddUser />} />
+              <Route path="users/edit/:id" element={<EditUser />} />
+            </Route>
+          </Route>
+          <Route path="/403" element={<Forbidden />} />
+        </Routes>
+      </BookingProvider>
+    </SettingsProvider>
   );
 }

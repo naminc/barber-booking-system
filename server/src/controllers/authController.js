@@ -9,13 +9,24 @@ exports.register = async (req, res) => {
       token: result.token,
     });
   } catch (err) {
-    res.status(400).json({ error: err.message || "Đăng ký thất bại" });
+    const statusCode = err.statusCode || 400;
+    res.status(statusCode).json({ 
+      error: err.message || "Đăng ký thất bại",
+      details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
   }
 };
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ 
+        error: "Email và mật khẩu không được để trống" 
+      });
+    }
+
     const result = await authService.login(email, password);
     res.json({
       message: "Đăng nhập thành công",
@@ -23,6 +34,13 @@ exports.login = async (req, res) => {
       token: result.token,
     });
   } catch (err) {
-    res.status(400).json({ error: err.message || "Đăng nhập thất bại" });
+    
+    const errorMessage = err.message || "Đăng nhập thất bại";
+    const statusCode = err.statusCode || 400;
+    
+    res.status(statusCode).json({ 
+      error: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
   }
 };

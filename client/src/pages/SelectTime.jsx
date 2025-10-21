@@ -193,28 +193,60 @@ const SelectTime = () => {
                 {/* Time Selection */}
                 {selectedDate && (
                   <div className="mb-8">
-                    <label className="block text-sm font-semibold mb-3 text-[var(--color-gold)]">
+                    <label className="block text-sm font-semibold mb-4 text-[var(--color-gold)]">
                       <FaClock className="inline-block mr-2" /> Chọn giờ *
                     </label>
-                    <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
+                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                       {availableTimes.map((time, index) => (
                         <button
                           key={index}
                           onClick={() => handleTimeSelect(time)}
-                          className={`p-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
+                          className={`group relative p-4 rounded-xl border-2 transition-all duration-300 overflow-hidden ${
                             selectedTime === time
-                              ? "border-[var(--color-gold)] bg-[var(--color-gold)]/20 text-[var(--color-gold)] shadow-lg"
-                              : "border-[var(--color-border)] hover:border-[var(--color-gold)]/50 hover:bg-[var(--color-gold)]/5"
+                              ? "border-[var(--color-gold)] bg-gradient-to-br from-[var(--color-gold)]/30 to-[var(--color-gold)]/10 text-[var(--color-gold)] shadow-[0_0_20px_rgba(194,158,117,0.3)] scale-105"
+                              : "border-[var(--color-border)] hover:border-[var(--color-gold)]/50 hover:bg-[var(--color-gold)]/5 hover:scale-105"
                           }`}
+                          style={{ 
+                            animation: `fadeInScale 0.4s ease-out ${index * 0.02}s both`,
+                          }}
                         >
-                          <div className="text-center">
-                            <div className="font-semibold text-sm">{time}</div>
+                          {/* Shine effect */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                          
+                          {/* Time Display */}
+                          <div className="relative z-10 text-center">
+                            <div className={`font-bold text-base mb-1 ${
+                              selectedTime === time ? "text-[var(--color-gold)]" : "text-[var(--color-text-main)]"
+                            }`}>
+                              {time}
+                            </div>
+                            {selectedTime === time && (
+                              <FaCheckCircle className="text-[var(--color-gold)] text-xs mx-auto" />
+                            )}
                           </div>
+
+                          {/* Selection indicator line */}
+                          {selectedTime === time && (
+                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-gold)] to-transparent"></div>
+                          )}
                         </button>
                       ))}
                     </div>
                   </div>
                 )}
+
+                <style jsx>{`
+                  @keyframes fadeInScale {
+                    from {
+                      opacity: 0;
+                      transform: scale(0.8);
+                    }
+                    to {
+                      opacity: 1;
+                      transform: scale(1);
+                    }
+                  }
+                `}</style>
 
                 {/* Notes Field */}
                 <div className="mb-8">
@@ -233,77 +265,116 @@ const SelectTime = () => {
             </div>
 
             {/* Booking Summary */}
-            <div className="space-y-6">
-              {/* Selected Service */}
-              {bookingData.service && (
-                <div className="barber-box p-6">
-                  <h3 className="text-xl font-bold text-[var(--color-gold)] mb-4 flex items-center gap-2">
-                    <FaCut /> Dịch vụ đã chọn
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="font-semibold text-[var(--color-text-main)]">
-                      {bookingData.service}
-                    </div>
-                    {bookingData.serviceDetails && (
-                      <>
-                        <div className="text-[var(--color-gold)] font-bold">
-                          {bookingData.serviceDetails.price}
-                        </div>
-                        <div className="text-sm text-[var(--color-text-muted)]">
-                          {bookingData.serviceDetails.duration}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
+            <div className="space-y-6 sticky top-24">
+              <div className="barber-box p-6 bg-gradient-to-br from-[var(--color-gold)]/10 to-transparent border-2 border-[var(--color-gold)]/30">
+                <h3 className="text-2xl font-bold text-[var(--color-gold)] mb-6 text-center">
+                  Thông tin đặt lịch
+                </h3>
 
-              {/* Selected Barber */}
-              {bookingData.barber && (
-                <div className="barber-box p-6">
-                  <h3 className="text-xl font-bold text-[var(--color-gold)] mb-4 flex items-center gap-2">
-                    <FaUserTie /> Thợ barber
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="font-semibold text-[var(--color-text-main)]">
-                      {bookingData.barber}
+                {/* Selected Service */}
+                {bookingData.service && (
+                  <div className="mb-6 pb-6 border-b border-[var(--color-border)]">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-[var(--color-gold)]/20 rounded-full flex items-center justify-center">
+                        <FaCut className="text-[var(--color-gold)]" />
+                      </div>
+                      <h4 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wide">
+                        Dịch vụ
+                      </h4>
                     </div>
-                    {bookingData.barberDetails && (
-                      <>
-                        <div className="text-sm text-[var(--color-text-light)]">
-                          {bookingData.barberDetails.specialty}
+                    <div className="ml-13 space-y-2">
+                      <div className="font-bold text-[var(--color-text-main)] text-lg">
+                        {bookingData.service}
+                      </div>
+                      {bookingData.serviceDetails && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-[var(--color-gold)] font-bold text-xl">
+                            {bookingData.serviceDetails.price}
+                          </span>
+                          <span className="text-sm text-[var(--color-text-muted)] bg-[var(--color-dark-bg)] px-3 py-1 rounded-full">
+                            <FaClock className="inline mr-1" />
+                            {bookingData.serviceDetails.duration}
+                          </span>
                         </div>
-                        <div className="text-sm text-[var(--color-text-muted)]">
-                          {bookingData.barberDetails.experience} kinh nghiệm
-                        </div>
-                      </>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Selected Time */}
-              {(selectedDate || selectedTime) && (
-                <div className="barber-box p-6">
-                  <h3 className="text-xl font-bold text-[var(--color-gold)] mb-4 flex items-center gap-2">
-                    <FaClock /> Thời gian
-                  </h3>
-                  <div className="space-y-2">
-                    {selectedDate && (
-                      <div className="text-[var(--color-text-main)]">
-                        <span className="font-semibold">Ngày:</span>{" "}
-                        {formatDate(selectedDate)}
+                {/* Selected Barber */}
+                {bookingData.barber && (
+                  <div className="mb-6 pb-6 border-b border-[var(--color-border)]">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-[var(--color-gold)]/20 rounded-full flex items-center justify-center">
+                        <FaUserTie className="text-[var(--color-gold)]" />
                       </div>
-                    )}
-                    {selectedTime && (
-                      <div className="text-[var(--color-text-main)]">
-                        <span className="font-semibold">Giờ:</span>{" "}
-                        {selectedTime}
+                      <h4 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wide">
+                        Barber
+                      </h4>
+                    </div>
+                    <div className="ml-13 space-y-2">
+                      <div className="font-bold text-[var(--color-text-main)] text-lg">
+                        {bookingData.barber}
                       </div>
-                    )}
+                      {bookingData.barberDetails && (
+                        <div className="space-y-1">
+                          <div className="text-sm text-[var(--color-gold)] font-medium">
+                            {bookingData.barberDetails.specialty}
+                          </div>
+                          <div className="text-xs text-[var(--color-text-muted)]">
+                            <FaCheckCircle className="inline mr-1" />
+                            {bookingData.barberDetails.experience} kinh nghiệm
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+
+                {/* Selected Time */}
+                {(selectedDate || selectedTime) && (
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-[var(--color-gold)]/20 rounded-full flex items-center justify-center">
+                        <FaClock className="text-[var(--color-gold)]" />
+                      </div>
+                      <h4 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wide">
+                        Thời gian
+                      </h4>
+                    </div>
+                    <div className="ml-13 space-y-3">
+                      {selectedDate && (
+                        <div className="bg-[var(--color-dark-bg)] p-3 rounded-lg">
+                          <div className="text-xs text-[var(--color-text-muted)] mb-1">Ngày hẹn</div>
+                          <div className="font-semibold text-[var(--color-text-main)]">
+                            <FaCalendarAlt className="inline mr-2 text-[var(--color-gold)]" />
+                            {formatDate(selectedDate)}
+                          </div>
+                        </div>
+                      )}
+                      {selectedTime && (
+                        <div className="bg-[var(--color-gold)]/10 p-3 rounded-lg border border-[var(--color-gold)]/30">
+                          <div className="text-xs text-[var(--color-gold)] mb-1">Giờ hẹn</div>
+                          <div className="font-bold text-[var(--color-gold)] text-xl">
+                            <FaClock className="inline mr-2" />
+                            {selectedTime}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Completion Status */}
+                {selectedDate && selectedTime && (
+                  <div className="mt-6 pt-6 border-t border-[var(--color-gold)]/30">
+                    <div className="flex items-center justify-center gap-2 text-green-500">
+                      <FaCheckCircle className="text-lg animate-pulse" />
+                      <span className="font-semibold">Sẵn sàng xác nhận</span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

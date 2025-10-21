@@ -6,6 +6,7 @@ import {
   FaArrowLeft,
   FaStar,
   FaCheckCircle,
+  FaAward,
 } from "react-icons/fa";
 import { useBookingContext } from "../context/BookingContext";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +39,7 @@ const SelectBarber = () => {
       rating: 4.9,
       specialty: "Tạo kiểu",
       experience: "5 năm",
-      avatar: "👨‍🎭",
+      avatar: "👨",
     },
     {
       name: "Anh Lộc",
@@ -105,7 +106,9 @@ const SelectBarber = () => {
             <div className="flex items-center space-x-2 sm:space-x-4 max-w-full">
               <div className="flex flex-col items-center">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">1</span>
+                  <span className="text-black font-bold text-sm sm:text-base">
+                    1
+                  </span>
                 </div>
                 <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
                   Dịch vụ
@@ -114,7 +117,9 @@ const SelectBarber = () => {
               <div className="w-8 sm:w-16 h-0.5 bg-[var(--color-gold)]"></div>
               <div className="flex flex-col items-center">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">2</span>
+                  <span className="text-black font-bold text-sm sm:text-base">
+                    2
+                  </span>
                 </div>
                 <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
                   Barber
@@ -154,51 +159,110 @@ const SelectBarber = () => {
               <div
                 key={index}
                 onClick={() => handleBarberSelect(barber)}
-                className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-300 cursor-pointer hover:scale-105 ${
+                className={`group relative overflow-hidden rounded-2xl border-2 transition-all duration-500 cursor-pointer ${
                   selectedBarber === barber.name
-                    ? "border-[var(--color-gold)] bg-[var(--color-gold)]/10 shadow-lg"
-                    : "border-[var(--color-border)] bg-[var(--color-dark-bg2)] hover:border-[var(--color-gold)]/50 hover:shadow-md"
+                    ? "border-[var(--color-gold)] bg-gradient-to-br from-[var(--color-gold)]/20 to-[var(--color-gold)]/5 shadow-[0_0_30px_rgba(194,158,117,0.4)] scale-105"
+                    : "border-[var(--color-border)] bg-[var(--color-dark-bg2)] hover:border-[var(--color-gold)]/50 hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)] hover:scale-105"
                 }`}
+                style={{
+                  animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
+                }}
               >
-                <div className="p-6 text-center">
-                  {/* Avatar */}
-                  <div className="text-6xl mb-4">
-                    {barber.avatar}
+                {/* Shine effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+
+                {/* Selection badge */}
+                {selectedBarber === barber.name && (
+                  <div className="absolute top-4 right-4 w-12 h-12 bg-[var(--color-gold)] rounded-full flex items-center justify-center shadow-lg animate-bounce z-20">
+                    <FaCheckCircle className="text-black text-2xl" />
                   </div>
-                  
+                )}
+
+                <div className="p-6 text-center relative z-10">
+                  {/* Avatar with animated border */}
+                  <div className="relative inline-block mb-4">
+                    <div
+                      className={`absolute inset-0 rounded-full transition-all duration-500 ${
+                        selectedBarber === barber.name
+                          ? "bg-gradient-to-r from-[var(--color-gold)] via-[#d4af37] to-[var(--color-gold)] animate-spin-slow p-[3px]"
+                          : "bg-[var(--color-gold)]/20 p-[2px]"
+                      }`}
+                    >
+                      <div className="w-full h-full bg-[var(--color-dark-bg2)] rounded-full"></div>
+                    </div>
+                    <div
+                      className={`relative text-7xl transition-transform duration-300 ${
+                        selectedBarber === barber.name
+                          ? "scale-110"
+                          : "group-hover:scale-110"
+                      }`}
+                    >
+                      {barber.avatar}
+                    </div>
+                  </div>
+
                   {/* Name */}
-                  <h3 className="text-lg font-bold text-[var(--color-text-main)] mb-2">
+                  <h3 className="text-xl font-bold text-[var(--color-text-main)] mb-3 group-hover:text-[var(--color-gold)] transition-colors">
                     {barber.name}
                   </h3>
-                  
-                  {/* Rating */}
-                  <div className="flex items-center justify-center gap-2 mb-3">
+
+                  {/* Rating with stars */}
+                  <div className="flex items-center justify-center gap-2 mb-4 px-3 py-2 bg-[var(--color-dark-bg)]/50 rounded-lg inline-flex">
                     {renderStars(barber.rating)}
-                    <span className="text-sm text-[var(--color-text-light)]">
-                      {barber.rating}/5
+                    <span className="text-sm text-[var(--color-gold)] font-bold ml-1">
+                      {barber.rating}
                     </span>
                   </div>
-                  
-                  {/* Specialty */}
-                  <div className="text-sm text-[var(--color-gold)] font-semibold mb-2">
-                    {barber.specialty}
+
+                  {/* Divider */}
+                  <div className="h-px bg-gradient-to-r from-transparent via-[var(--color-border)] to-transparent mb-4"></div>
+
+                  {/* Specialty tag */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/30 rounded-full mb-3">
+                    <div className="w-2 h-2 bg-[var(--color-gold)] rounded-full animate-pulse"></div>
+                    <span className="text-sm text-[var(--color-gold)] font-semibold">
+                      {barber.specialty}
+                    </span>
                   </div>
-                  
-                  {/* Experience */}
-                  <div className="text-xs text-[var(--color-text-muted)] mb-4">
+
+                  {/* Experience badge */}
+                  <div className="text-xs text-[var(--color-text-muted)] bg-[var(--color-dark-bg)] px-3 py-1 rounded-full inline-block">
+                    <FaAward className="inline mr-1 text-[var(--color-gold)]" />
                     {barber.experience} kinh nghiệm
                   </div>
-                  
-                  {/* Selection Indicator */}
-                  {selectedBarber === barber.name && (
-                    <div className="flex items-center justify-center">
-                      <FaCheckCircle className="text-[var(--color-gold)] text-xl" />
-                    </div>
-                  )}
                 </div>
+
+                {/* Bottom highlight line for selected */}
+                {selectedBarber === barber.name && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-gold)] to-transparent"></div>
+                )}
               </div>
             ))}
           </div>
+
+          <style jsx>{`
+            @keyframes fadeInUp {
+              from {
+                opacity: 0;
+                transform: translateY(30px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            @keyframes spin-slow {
+              from {
+                transform: rotate(0deg);
+              }
+              to {
+                transform: rotate(360deg);
+              }
+            }
+            .animate-spin-slow {
+              animation: spin-slow 3s linear infinite;
+            }
+          `}</style>
 
           {/* Navigation Buttons */}
           <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-0">
@@ -221,7 +285,7 @@ const SelectBarber = () => {
               <FaArrowRight className="text-base" />
             </button>
           </div>
-          
+
           {!selectedBarber && (
             <div className="text-center mt-4">
               <p className="text-[var(--color-text-muted)] text-sm">

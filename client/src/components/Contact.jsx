@@ -1,7 +1,10 @@
 import React from "react";
 import { FaPaperPlane } from "react-icons/fa";
-
+import { useSettingsContext } from "../context/SettingsContext";
 const Contact = () => {
+  const { getSetting } = useSettingsContext();
+  const shopEmail = getSetting("email");
+  const shopPhone = getSetting("phone");
   return (
     <section
       id="contact"
@@ -25,16 +28,16 @@ const Contact = () => {
 
           <div className="flex flex-col text-gray-300 text-lg font-medium gap-1">
             <a
-              href="mailto:admin@naminc.dev"
+              href={`mailto:${shopEmail}`}
               className="hover:text-[#c29e75] transition-all duration-200"
             >
-              admin@naminc.dev
+              {shopEmail}
             </a>
             <a
-              href="tel:+84347101143"
+              href={`tel:${shopPhone}`}
               className="hover:text-[#c29e75] transition-all duration-200"
             >
-              +84 347 101 143
+              {shopPhone }
             </a>
           </div>
 
