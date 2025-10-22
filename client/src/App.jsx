@@ -22,12 +22,13 @@ import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/Admin/Dashboard";
 import Settings from "./pages/Admin/Settings";
 import Staff from "./pages/Admin/Staff";
-import AdminServices from "./pages/Admin/Services";
 import Bookings from "./pages/Admin/Bookings";
 import Users from "./pages/Admin/UserManagement/Users";
 import AddUser from "./pages/Admin/UserManagement/AddUser";
 import EditUser from "./pages/Admin/UserManagement/EditUser";
-import AddService from "./pages/Admin/AddService";
+import AdminServices from "./pages/Admin/ServiceManagement/Services";
+import AddService from "./pages/Admin/ServiceManagement/AddService";
+import EditService from "./pages/Admin/ServiceManagement/EditService";
 import AddBooking from "./pages/Admin/AddBooking";
 import AddStaff from "./pages/Admin/AddStaff";
 import { BookingProvider } from "./context/BookingContext";
@@ -88,6 +89,7 @@ export default function App() {
               <Route path="staff/add" element={<AddStaff />} />
               <Route path="services" element={<AdminServices />} />
               <Route path="services/add" element={<AddService />} />
+              <Route path="services/edit/:id" element={<EditService />} />
               <Route path="bookings" element={<Bookings />} />
               <Route path="bookings/add" element={<AddBooking />} />
               <Route path="users" element={<Users />} />

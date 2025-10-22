@@ -6,4 +6,5 @@ export { useNotification } from "./useNotification";
 export { useProfileUpdate } from "./useProfileUpdate";
 export { useAuth } from "./useAuth";
 export { useUsers } from "./useUsers";
+export { useServices } from "./useServices";
 export { usePageTitle } from "./usePageTitle";

@@ -8,12 +8,14 @@ const authRoutes = require("./routes/authRoutes");
 const settingRoutes = require("./routes/settingRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.set("json spaces", 2);
+app.use("/uploads", express.static("public/uploads"));
 
 // Test routes
 app.get("/", (req, res) => res.send("Hello NodeJS Backend"));
@@ -28,5 +30,6 @@ app.use("/api/staff", staffRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/settings", settingRoutes);
 app.use("/api/services", serviceRoutes);
+app.use("/api/upload", uploadRoutes);
 
 module.exports = app;

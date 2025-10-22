@@ -1,45 +1,47 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserPlus, RefreshCw } from "lucide-react";
+import { Plus, RefreshCw } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
-import { useUsers } from "../../../hooks";
+import { useServices } from "../../../hooks";
 import LoadingState from "../../../components/LoadingState";
 import ErrorState from "../../../components/ErrorState";
 import {
   StatsCards,
   SearchFilter,
-  UserTable,
+  ServiceTable,
   Pagination,
   EmptyState,
 } from "./components";
 
-export default function Users() {
+export default function Services() {
   const navigate = useNavigate();
-  const { users, loading, error, toggleUserStatus, fetchUsers } = useUsers();
-  const [toggling, setToggling] = useState(null);
+  const { services, loading, error, deleteService, fetchServices } =
+    useServices();
+  const [deleting, setDeleting] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterRole, setFilterRole] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
   // Filter and search
-  const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
+  const filteredServices = useMemo(() => {
+    return services.filter((service) => {
       const matchesSearch =
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.phone && user.phone.includes(searchTerm));
-      const matchesRole = filterRole === "all" || user.role === filterRole;
-      return matchesSearch && matchesRole;
+        service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (service.description &&
+          service.description.toLowerCase().includes(searchTerm.toLowerCase()));
+      const matchesStatus =
+        filterStatus === "all" || service.status === filterStatus;
+      return matchesSearch && matchesStatus;
     });
-  }, [users, searchTerm, filterRole]);
+  }, [services, searchTerm, filterStatus]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
-  const paginatedUsers = useMemo(() => {
+  const totalPages = Math.ceil(filteredServices.length / itemsPerPage);
+  const paginatedServices = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredUsers.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredUsers, currentPage, itemsPerPage]);
+    return filteredServices.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredServices, currentPage, itemsPerPage]);
 
   // Handlers
   const resetPage = () => setCurrentPage(1);
@@ -50,39 +52,38 @@ export default function Users() {
   };
 
   const handleFilterChange = (value) => {
-    setFilterRole(value);
+    setFilterStatus(value);
     resetPage();
   };
 
   const handleClearFilters = () => {
     setSearchTerm("");
-    setFilterRole("all");
+    setFilterStatus("all");
     resetPage();
   };
 
-  const handleToggleStatus = async (userId, currentStatus, userName) => {
-    const action = currentStatus === "active" ? "khóa" : "mở khóa";
+  const handleDeleteService = async (serviceId, serviceName) => {
     if (
       window.confirm(
-        `Bạn có chắc chắn muốn ${action} người dùng "${userName}"?`
+        `Bạn có chắc chắn muốn xóa dịch vụ "${serviceName}"? Hành động này không thể hoàn tác.`
       )
     ) {
       try {
-        setToggling(userId);
-        const result = await toggleUserStatus(userId, currentStatus);
+        setDeleting(serviceId);
+        const result = await deleteService(serviceId);
         toast.success(result.message);
       } catch (err) {
-        toast.error(err.error || "Thay đổi trạng thái thất bại");
+        toast.error(err.error || "Xóa dịch vụ thất bại");
       } finally {
-        setToggling(null);
+        setDeleting(null);
       }
     }
   };
 
   if (loading) return <LoadingState />;
-  if (error) return <ErrorState error={error} onRetry={fetchUsers} />;
+  if (error) return <ErrorState error={error} onRetry={fetchServices} />;
 
-  const hasActiveFilters = searchTerm || filterRole !== "all";
+  const hasActiveFilters = searchTerm || filterStatus !== "all";
 
   return (
     <div className="space-y-6">
@@ -93,24 +94,24 @@ export default function Users() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Quản lý người dùng
+              Quản lý dịch vụ
             </h1>
-            <p className="text-gray-600 mt-1">Quản lý thông tin khách hàng</p>
+            <p className="text-gray-600 mt-1">Quản lý dịch vụ của cửa hàng</p>
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={fetchUsers}
+              onClick={fetchServices}
               className="flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition"
               title="Làm mới"
             >
               <RefreshCw className="h-4 w-4" />
             </button>
             <button
-              onClick={() => navigate("/admin/users/add")}
+              onClick={() => navigate("/admin/services/add")}
               className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
             >
-              <UserPlus className="h-4 w-4" />
-              Thêm người dùng
+              <Plus className="h-4 w-4" />
+              Thêm dịch vụ
             </button>
           </div>
         </div>
@@ -119,25 +120,25 @@ export default function Users() {
       {/* Search and Filter */}
       <SearchFilter
         searchTerm={searchTerm}
-        filterRole={filterRole}
+        filterStatus={filterStatus}
         onSearchChange={handleSearchChange}
         onFilterChange={handleFilterChange}
         onClearFilters={handleClearFilters}
-        resultsCount={paginatedUsers.length}
-        totalCount={filteredUsers.length}
+        resultsCount={paginatedServices.length}
+        totalCount={filteredServices.length}
       />
 
       {/* Stats Cards */}
-      <StatsCards users={users} />
+      <StatsCards services={services} />
 
-      {/* User Table */}
-      {filteredUsers.length > 0 ? (
+      {/* Service Table */}
+      {filteredServices.length > 0 ? (
         <>
-          <UserTable
-            users={paginatedUsers}
-            onEdit={(user) => navigate(`/admin/users/edit/${user.id}`)}
-            onToggleStatus={handleToggleStatus}
-            toggling={toggling}
+          <ServiceTable
+            services={paginatedServices}
+            onEdit={(service) => navigate(`/admin/services/edit/${service.id}`)}
+            onDelete={handleDeleteService}
+            deleting={deleting}
           />
 
           {/* Pagination */}

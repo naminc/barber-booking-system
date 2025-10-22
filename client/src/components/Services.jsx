@@ -6,9 +6,25 @@ import blade from "../imgs/blade.png";
 import scissors from "../imgs/scissors.png";
 import { useNavigate } from "react-router-dom";
 import { FaCalendarAlt } from "react-icons/fa";
+import { useServices } from "../hooks";
 
 const Services = () => {
   const navigate = useNavigate();
+  const { services, loading } = useServices();
+
+  // Default images
+  const defaultImages = [scissors, blade, hairDrayer, bottle, beard];
+
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith("http")) return imagePath;
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    return `${apiUrl.replace("/api", "")}${imagePath}`;
+  };
+
+  // Chỉ lấy dịch vụ active
+  const activeServices = services.filter((s) => s.status === "active");
+
   return (
     <div id="services">
       <section className="flex justify-center items-center flex-col py-20">
@@ -19,58 +35,31 @@ const Services = () => {
           <p className="font-medium text-center">
             Chúng tôi mang đến những dịch vụ tốt nhất dành cho phái mạnh.
           </p>
-          <div className="flex justify-center items-center flex-wrap mt-8">
-            <div className="card text-center m-3">
-              <img src={scissors} alt="" className="mx-auto mb-2" />
-              <h4 className="text-xl font-semibold text-[#fdf8f2] leading-tight mt-2 mb-1 tracking-wide">
-                Cắt tóc cơ bản
-              </h4>
-              <p className="px-4 py-2 text-[15px] leading-snug text-gray-300">
-                Kiểu tóc gọn gàng, phù hợp với khuôn mặt và phong cách của bạn.
-                Dành cho những quý ông ưa sự chỉnh chu.
-              </p>
+
+          {loading ? (
+            <div className="mt-8 text-gray-400">Đang tải dịch vụ...</div>
+          ) : activeServices.length > 0 ? (
+            <div className="flex justify-center items-center flex-wrap mt-8">
+              {activeServices.map((service, index) => {
+                const imageUrl = getImageUrl(service.image);
+                const displayImage = imageUrl || defaultImages[index % defaultImages.length];
+
+                return (
+                  <div key={service.id} className="card text-center m-3">
+                    <img src={displayImage} alt={service.name} className="mx-auto mb-2" />
+                    <h4 className="text-xl font-semibold text-[#fdf8f2] leading-tight mt-2 mb-1 tracking-wide">
+                      {service.name}
+                    </h4>
+                    <p className="px-4 py-2 text-[15px] leading-snug text-gray-300">
+                      {service.description}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
-            <div className="card text-center m-3">
-              <img src={blade} alt="" className="mx-auto mb-2" />
-              <h4 className="text-xl font-semibold text-[#fdf8f2] leading-tight mt-2 mb-1 tracking-wide">
-                Cạo râu truyền thống
-              </h4>
-              <p className="px-4 py-2 text-[15px] leading-snug text-gray-300">
-                Trải nghiệm cảm giác thư giãn với dao cạo chuyên dụng và tay
-                nghề chuẩn Barber.
-              </p>
-            </div>
-            <div className="card text-center m-3">
-              <img src={hairDrayer} alt="" className="mx-auto mb-2" />
-              <h4 className="text-xl font-semibold text-[#fdf8f2] leading-tight mt-2 mb-1 tracking-wide">
-                Gội đầu & tạo kiểu
-              </h4>
-              <p className="px-4 py-2 text-[15px] leading-snug text-gray-300">
-                Gội đầu thư giãn với tinh dầu tự nhiên, sấy tạo kiểu sang trọng
-                và lịch lãm.
-              </p>
-            </div>
-            <div className="card text-center m-3">
-              <img src={bottle} alt="" className="mx-auto mb-2" />
-              <h4 className="text-xl font-semibold text-[#fdf8f2] leading-tight mt-2 mb-1 tracking-wide">
-                Phục hồi tóc
-              </h4>
-              <p className="px-4 py-2 text-[15px] leading-snug text-gray-300">
-                Dưỡng tóc chuyên sâu giúp tóc khỏe mạnh, bóng mượt và phục hồi
-                hư tổn hiệu quả.
-              </p>
-            </div>
-            <div className="card text-center m-3">
-              <img src={beard} alt="" className="mx-auto mb-2" />
-              <h4 className="text-xl font-semibold text-[#fdf8f2] leading-tight mt-2 mb-1 tracking-wide">
-                Tỉa & tạo kiểu râu
-              </h4>
-              <p className="px-4 py-2 text-[15px] leading-snug text-gray-300">
-                Chăm sóc râu chuyên nghiệp, tỉa gọn và tạo hình phù hợp với
-                khuôn mặt của bạn.
-              </p>
-            </div>
-          </div>
+          ) : (
+            <div className="mt-8 text-gray-400">Chưa có dịch vụ nào</div>
+          )}
         </div>
         <div className="mt-10">
           <button

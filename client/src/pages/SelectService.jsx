@@ -3,63 +3,56 @@ import Header from "../components/Header";
 import { FaCut, FaArrowRight, FaClock, FaCheckCircle } from "react-icons/fa";
 import { useBookingContext } from "../context/BookingContext";
 import { useNavigate } from "react-router-dom";
+import { useServices } from "../hooks";
 import "../theme.css";
 
 const SelectService = () => {
   const { bookingData, updateBookingData } = useBookingContext();
   const navigate = useNavigate();
+  const { services: allServices, loading } = useServices();
   const [selectedService, setSelectedService] = useState(
     bookingData.service || ""
   );
 
-  const services = [
-    {
-      name: "Cắt tóc nam + gội đầu",
-      price: "150,000đ",
-      duration: "45 phút",
-      description: "Cắt tóc nam chuyên nghiệp kèm gội đầu và tạo kiểu",
-      icon: "✂️",
-    },
-    {
-      name: "Cạo râu + xả stress",
-      price: "200,000đ",
-      duration: "60 phút",
-      description: "Cạo râu truyền thống kèm massage mặt thư giãn",
-      icon: "🪒",
-    },
-    {
-      name: "Uốn tóc nam",
-      price: "300,000đ",
-      duration: "90 phút",
-      description: "Uốn tóc nam tạo kiểu cá tính và thời trang",
-      icon: "💇",
-    },
-    {
-      name: "Nhuộm tóc tạo kiểu",
-      price: "400,000đ",
-      duration: "120 phút",
-      description: "Nhuộm tóc nam với nhiều màu sắc và kiểu dáng hiện đại",
-      icon: "🎨",
-    },
-    {
-      name: "Cắt tóc + cạo râu combo",
-      price: "300,000đ",
-      duration: "75 phút",
-      description: "Combo cắt tóc và cạo râu với giá ưu đãi",
-      icon: "💫",
-    },
-    {
-      name: "Massage đầu + gội",
-      price: "100,000đ",
-      duration: "30 phút",
-      description: "Massage đầu thư giãn kèm gội đầu sạch sẽ",
-      icon: "🧴",
-    },
-  ];
+  // Lọc chỉ lấy dịch vụ active
+  const services = allServices.filter((s) => s.status === "active");
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
+  };
+
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith("http")) return imagePath;
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    return `${apiUrl.replace("/api", "")}${imagePath}`;
+  };
+
+  const getServiceIcon = (name) => {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes("cắt")) return "✂️";
+    if (lowerName.includes("râu") || lowerName.includes("cạo")) return "🪒";
+    if (lowerName.includes("uốn")) return "💇";
+    if (lowerName.includes("nhuộm") || lowerName.includes("màu")) return "🎨";
+    if (lowerName.includes("gội") || lowerName.includes("massage")) return "🧴";
+    if (lowerName.includes("combo")) return "💫";
+    return "✨";
+  };
 
   const handleServiceSelect = (service) => {
-    setSelectedService(service.name);
-    updateBookingData({ service: service.name, serviceDetails: service });
+    setSelectedService(service.id);
+    updateBookingData({
+      serviceId: service.id,
+      service: service.name,
+      serviceDetails: {
+        ...service,
+        price: formatPrice(service.price),
+        duration: service.duration ? `${service.duration} phút` : "N/A",
+      },
+    });
   };
 
   const handleNext = () => {
@@ -128,92 +121,121 @@ const SelectService = () => {
           </div>
 
           {/* Services Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                onClick={() => handleServiceSelect(service)}
-                className={`group relative overflow-hidden rounded-2xl border-2 transition-all duration-500 cursor-pointer ${
-                  selectedService === service.name
-                    ? "border-[var(--color-gold)] bg-gradient-to-br from-[var(--color-gold)]/20 to-[var(--color-gold)]/5 shadow-[0_0_30px_rgba(194,158,117,0.4)] scale-105"
-                    : "border-[var(--color-border)] bg-[var(--color-dark-bg2)] hover:border-[var(--color-gold)]/50 hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)] hover:scale-105"
-                }`}
-                style={{
-                  animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
-                }}
-              >
-                {/* Shine effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[var(--color-gold)] to-[#d4af37] rounded-full mb-4 animate-spin">
+                <FaClock className="text-2xl text-black" />
+              </div>
+              <p className="text-[var(--color-text-light)] text-lg">
+                Đang tải dịch vụ...
+              </p>
+            </div>
+          ) : services.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-[var(--color-text-muted)] text-lg">
+                Chưa có dịch vụ nào
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {services.map((service, index) => (
+                <div
+                  key={service.id}
+                  onClick={() => handleServiceSelect(service)}
+                  className={`group relative overflow-hidden rounded-2xl border-2 transition-all duration-500 cursor-pointer ${
+                    selectedService === service.id
+                      ? "border-[var(--color-gold)] bg-gradient-to-br from-[var(--color-gold)]/20 to-[var(--color-gold)]/5 shadow-[0_0_30px_rgba(194,158,117,0.4)] scale-105"
+                      : "border-[var(--color-border)] bg-[var(--color-dark-bg2)] hover:border-[var(--color-gold)]/50 hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)] hover:scale-105"
+                  }`}
+                  style={{
+                    animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
+                  }}
+                >
+                  {/* Shine effect on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
 
-                {/* Selection indicator badge */}
-                {selectedService === service.name && (
-                  <div className="absolute top-4 right-4 w-12 h-12 bg-[var(--color-gold)] rounded-full flex items-center justify-center shadow-lg animate-bounce z-20">
-                    <FaCheckCircle className="text-black text-2xl" />
-                  </div>
-                )}
+                  {/* Selection indicator badge */}
+                  {selectedService === service.id && (
+                    <div className="absolute top-4 right-4 w-12 h-12 bg-[var(--color-gold)] rounded-full flex items-center justify-center shadow-lg animate-bounce z-20">
+                      <FaCheckCircle className="text-black text-2xl" />
+                    </div>
+                  )}
 
-                <div className="p-7 relative z-10">
-                  {/* Icon with glow effect */}
-                  <div className="mb-5">
-                    <div
-                      className={`inline-flex items-center justify-center w-16 h-16 rounded-full transition-all duration-300 ${
-                        selectedService === service.name
-                          ? "bg-[var(--color-gold)] shadow-[0_0_20px_rgba(194,158,117,0.5)] scale-110"
-                          : "bg-[var(--color-gold)]/10 group-hover:bg-[var(--color-gold)]/20 group-hover:scale-110"
-                      }`}
-                    >
+                  <div className="p-7 relative z-10">
+                    {/* Icon/Image with glow effect */}
+                    <div className="mb-5">
                       <div
-                        className={`text-4xl transition-transform group-hover:scale-110 ${
-                          selectedService === service.name ? "grayscale-0" : ""
+                        className={`inline-flex items-center justify-center w-20 h-20 rounded-full transition-all duration-300 overflow-hidden ${
+                          selectedService === service.id
+                            ? "bg-[var(--color-gold)]/20 border-2 border-[var(--color-gold)] shadow-[0_0_20px_rgba(194,158,117,0.5)] scale-110"
+                            : "bg-[var(--color-gold)]/10 group-hover:bg-[var(--color-gold)]/20 group-hover:scale-110"
                         }`}
                       >
-                        {service.icon}
+                        {service.image && getImageUrl(service.image) ? (
+                          <img
+                            src={getImageUrl(service.image)}
+                            alt={service.name}
+                            className="w-12 h-12 object-contain transition-transform group-hover:scale-110"
+                          />
+                        ) : (
+                          <div
+                            className={`text-4xl transition-transform group-hover:scale-110 ${
+                              selectedService === service.id
+                                ? "text-[var(--color-gold)]"
+                                : ""
+                            }`}
+                          >
+                            {getServiceIcon(service.name)}
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
 
-                  {/* Service Info */}
-                  <div className="mb-5">
-                    <h3 className="text-xl font-bold text-[var(--color-text-main)] mb-3 group-hover:text-[var(--color-gold)] transition-colors">
-                      {service.name}
-                    </h3>
+                    {/* Service Info */}
+                    <div className="mb-5">
+                      <h3 className="text-xl font-bold text-[var(--color-text-main)] mb-3 group-hover:text-[var(--color-gold)] transition-colors">
+                        {service.name}
+                      </h3>
 
-                    <p className="text-[var(--color-text-light)] text-sm leading-relaxed">
-                      {service.description}
-                    </p>
-                  </div>
-
-                  {/* Divider */}
-                  <div className="h-px bg-gradient-to-r from-transparent via-[var(--color-border)] to-transparent mb-5"></div>
-
-                  {/* Price and Duration */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-xs text-[var(--color-text-muted)] mb-1">
-                        Giá dịch vụ
-                      </span>
-                      <span className="text-[var(--color-gold)] font-bold text-xl group-hover:scale-110 inline-block transition-transform origin-left">
-                        {service.price}
-                      </span>
+                      <p className="text-[var(--color-text-light)] text-sm leading-relaxed">
+                        {service.description}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-2 bg-[var(--color-dark-bg)] rounded-lg border border-[var(--color-border)]">
-                      <FaClock className="text-[var(--color-gold)] text-sm" />
-                      <span className="text-[var(--color-text-light)] text-sm font-medium">
-                        {service.duration}
-                      </span>
+
+                    {/* Divider */}
+                    <div className="h-px bg-gradient-to-r from-transparent via-[var(--color-border)] to-transparent mb-5"></div>
+
+                    {/* Price and Duration */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-xs text-[var(--color-text-muted)] mb-1">
+                          Giá dịch vụ
+                        </span>
+                        <span className="text-[var(--color-gold)] font-bold text-xl group-hover:scale-110 inline-block transition-transform origin-left">
+                          {formatPrice(service.price)}
+                        </span>
+                      </div>
+                      {service.duration && (
+                        <div className="flex items-center gap-2 px-3 py-2 bg-[var(--color-dark-bg)] rounded-lg border border-[var(--color-border)]">
+                          <FaClock className="text-[var(--color-gold)] text-sm" />
+                          <span className="text-[var(--color-text-light)] text-sm font-medium">
+                            {service.duration} phút
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
+
+                  {/* Bottom highlight line for selected */}
+                  {selectedService === service.id && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-gold)] to-transparent"></div>
+                  )}
                 </div>
+              ))}
+            </div>
+          )}
 
-                {/* Bottom highlight line for selected */}
-                {selectedService === service.name && (
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-gold)] to-transparent"></div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <style jsx>{`
+          <style>{`
             @keyframes fadeInUp {
               from {
                 opacity: 0;

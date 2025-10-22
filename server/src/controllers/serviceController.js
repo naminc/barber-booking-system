@@ -31,3 +31,30 @@ exports.create = async (req, res) => {
     res.status(500).json({ error: err.message || 'Tạo dịch vụ thất bại' });
   }
 };
+
+exports.update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, price, duration, image, status } = req.body;
+    const service = await serviceService.getServiceById(id);
+    if (!service) return res.status(404).json({ error: 'Dịch vụ không tồn tại' });
+    
+    const result = await serviceService.updateService(id, { name, description, price, duration, image, status });
+    res.json({ message: 'Cập nhật dịch vụ thành công', service: result });
+  } catch (err) {
+    res.status(500).json({ error: err.message || 'Cập nhật dịch vụ thất bại' });
+  }
+};
+
+exports.delete = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const service = await serviceService.getServiceById(id);
+    if (!service) return res.status(404).json({ error: 'Dịch vụ không tồn tại' });
+    
+    await serviceService.deleteService(id);
+    res.json({ message: 'Xóa dịch vụ thành công' });
+  } catch (err) {
+    res.status(500).json({ error: err.message || 'Xóa dịch vụ thất bại' });
+  }
+};

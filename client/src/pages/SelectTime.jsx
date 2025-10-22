@@ -206,18 +206,24 @@ const SelectTime = () => {
                               ? "border-[var(--color-gold)] bg-gradient-to-br from-[var(--color-gold)]/30 to-[var(--color-gold)]/10 text-[var(--color-gold)] shadow-[0_0_20px_rgba(194,158,117,0.3)] scale-105"
                               : "border-[var(--color-border)] hover:border-[var(--color-gold)]/50 hover:bg-[var(--color-gold)]/5 hover:scale-105"
                           }`}
-                          style={{ 
-                            animation: `fadeInScale 0.4s ease-out ${index * 0.02}s both`,
+                          style={{
+                            animation: `fadeInScale 0.4s ease-out ${
+                              index * 0.02
+                            }s both`,
                           }}
                         >
                           {/* Shine effect */}
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                          
+
                           {/* Time Display */}
                           <div className="relative z-10 text-center">
-                            <div className={`font-bold text-base mb-1 ${
-                              selectedTime === time ? "text-[var(--color-gold)]" : "text-[var(--color-text-main)]"
-                            }`}>
+                            <div
+                              className={`font-bold text-base mb-1 ${
+                                selectedTime === time
+                                  ? "text-[var(--color-gold)]"
+                                  : "text-[var(--color-text-main)]"
+                              }`}
+                            >
                               {time}
                             </div>
                             {selectedTime === time && (
@@ -235,7 +241,7 @@ const SelectTime = () => {
                   </div>
                 )}
 
-                <style jsx>{`
+                <style>{`
                   @keyframes fadeInScale {
                     from {
                       opacity: 0;
@@ -345,7 +351,9 @@ const SelectTime = () => {
                     <div className="ml-13 space-y-3">
                       {selectedDate && (
                         <div className="bg-[var(--color-dark-bg)] p-3 rounded-lg">
-                          <div className="text-xs text-[var(--color-text-muted)] mb-1">Ngày hẹn</div>
+                          <div className="text-xs text-[var(--color-text-muted)] mb-1">
+                            Ngày hẹn
+                          </div>
                           <div className="font-semibold text-[var(--color-text-main)]">
                             <FaCalendarAlt className="inline mr-2 text-[var(--color-gold)]" />
                             {formatDate(selectedDate)}
@@ -354,7 +362,9 @@ const SelectTime = () => {
                       )}
                       {selectedTime && (
                         <div className="bg-[var(--color-gold)]/10 p-3 rounded-lg border border-[var(--color-gold)]/30">
-                          <div className="text-xs text-[var(--color-gold)] mb-1">Giờ hẹn</div>
+                          <div className="text-xs text-[var(--color-gold)] mb-1">
+                            Giờ hẹn
+                          </div>
                           <div className="font-bold text-[var(--color-gold)] text-xl">
                             <FaClock className="inline mr-2" />
                             {selectedTime}
