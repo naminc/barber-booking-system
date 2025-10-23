@@ -9,9 +9,9 @@ node_modules/
 .vscode/
 .idea/
 
-# Database dump
+# Database files
 server/db.sql
-!server/db_sample.sql
+server/database.sql
 
 # Build
 client/dist/
