@@ -236,6 +236,7 @@ barber-booking/
    cp .env.example .env
 
    # Configure your environment variables
+   # Import database file from /server/db_sample.sql
    DB_HOST=localhost
    DB_USER=root
    DB_PASSWORD=your_password
