@@ -85,9 +85,6 @@ barber-booking/
 │   │   │   ├── axiosClient.js
 │   │   │   ├── contactsApi.js
 │   │   │   ├── servicesApi.js
-│   │   │   ├── settingsApi.js
-│   │   │   ├── staffApi.js
-│   │   │   └── usersApi.js
 │   │   ├── 📁 components/              # Reusable UI components
 │   │   │   ├── 📁 Admin/
 │   │   │   │   ├── Navbar.jsx
@@ -97,12 +94,6 @@ barber-booking/
 │   │   │   ├── ErrorState.jsx
 │   │   │   ├── Footer.jsx
 │   │   │   ├── Header.jsx
-│   │   │   ├── Hero.jsx
-│   │   │   ├── Hours.jsx
-│   │   │   ├── ImageUpload.jsx
-│   │   │   ├── LoadingState.jsx
-│   │   │   ├── Prices.jsx
-│   │   │   └── Services.jsx
 │   │   ├── 📁 context/                 # React Context providers
 │   │   │   ├── BookingContext.jsx
 │   │   │   └── SettingsContext.jsx
@@ -112,12 +103,6 @@ barber-booking/
 │   │   │   ├── useContacts.js
 │   │   │   ├── useForm.js
 │   │   │   ├── useNotification.js
-│   │   │   ├── usePageTitle.js
-│   │   │   ├── useProfileUpdate.js
-│   │   │   ├── useServices.js
-│   │   │   ├── useStaff.js
-│   │   │   ├── useUserProfile.js
-│   │   │   └── useUsers.js
 │   │   ├── 📁 layouts/                 # Layout components
 │   │   │   └── AdminLayout.jsx
 │   │   ├── 📁 pages/                   # Page components
@@ -135,17 +120,11 @@ barber-booking/
 │   │   │   │   ├── 📁 StaffManagement/
 │   │   │   │   └── 📁 UserManagement/
 │   │   │   ├── Booking.jsx
-│   │   │   ├── BookingConfirmation.jsx
-│   │   │   ├── EditProfile.jsx
 │   │   │   ├── Forbidden.jsx
 │   │   │   ├── ForgotPassword.jsx
 │   │   │   ├── Login.jsx
 │   │   │   ├── Profile.jsx
 │   │   │   ├── Register.jsx
-│   │   │   ├── Review.jsx
-│   │   │   ├── SelectBarber.jsx
-│   │   │   ├── SelectService.jsx
-│   │   │   └── SelectTime.jsx
 │   │   ├── 📁 routes/                  # Route protection components
 │   │   │   ├── GuestRoute.jsx
 │   │   │   └── ProtectedRoute.jsx
@@ -162,9 +141,6 @@ barber-booking/
 │   │   ├── 01.jpg, 02.jpg
 │   │   ├── about-img1.jpg
 │   │   ├── hero.jpg
-│   │   ├── beard.png, blade.png
-│   │   ├── bottle.png, hair-dryer.png
-│   │   ├── scissors.png
 │   │   └── [other images...]
 │   ├── index.html                      # HTML template
 │   ├── package.json                    # Frontend dependencies
@@ -180,18 +156,12 @@ barber-booking/
 │   │   │   ├── authController.js
 │   │   │   ├── contactController.js
 │   │   │   ├── reviewController.js
-│   │   │   ├── serviceController.js
-│   │   │   ├── settingController.js
-│   │   │   ├── staffController.js
-│   │   │   └── userController.js
 │   │   ├── 📁 middlewares/             # Express middlewares
 │   │   │   ├── authMiddleware.js
 │   │   │   ├── roleMiddleware.js
 │   │   │   ├── upload.js
 │   │   │   └── validate.js
 │   │   ├── 📁 models/                  # Database models
-│   │   │   ├── Appointment.js
-│   │   │   ├── Contact.js
 │   │   │   ├── Review.js
 │   │   │   ├── Service.js
 │   │   │   ├── Setting.js
@@ -201,19 +171,10 @@ barber-booking/
 │   │   │   ├── authRoutes.js
 │   │   │   ├── contactRoutes.js
 │   │   │   ├── reviewRoutes.js
-│   │   │   ├── serviceRoutes.js
-│   │   │   ├── settingRoutes.js
-│   │   │   ├── staffRoutes.js
-│   │   │   ├── uploadRoutes.js
-│   │   │   └── userRoutes.js
 │   │   ├── 📁 services/                # Business logic services
 │   │   │   ├── authService.js
 │   │   │   ├── contactService.js
 │   │   │   ├── reviewService.js
-│   │   │   ├── serviceService.js
-│   │   │   ├── settingService.js
-│   │   │   ├── staffService.js
-│   │   │   └── userService.js
 │   │   ├── 📁 utils/                   # Utility functions
 │   │   │   └── helpers.js
 │   │   ├── 📁 validations/             # Input validation schemas
@@ -248,8 +209,8 @@ barber-booking/
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/barber-booking.git
-   cd barber-booking
+   git clone https://github.com/naminc/barber-booking-system.git
+   cd barber-booking-system
    ```
 
 2. **Install dependencies**
@@ -267,18 +228,7 @@ barber-booking/
    npm install
    ```
 
-3. **Database setup**
-
-   ```bash
-   # Create MySQL database
-   mysql -u root -p
-   CREATE DATABASE barber_booking;
-
-   # Import database schema
-   mysql -u root -p barber_booking < server/db.sql
-   ```
-
-4. **Environment configuration**
+3. **Environment configuration**
 
    ```bash
    # Create .env file in server directory
@@ -293,11 +243,11 @@ barber-booking/
    JWT_SECRET=your_jwt_secret
    ```
 
-5. **Run the application**
+4. **Run the application**
 
    ```bash
    # Start the server (from server directory)
-   npm start
+   npm run dev
 
    # Start the client (from client directory)
    cd ../client
@@ -307,8 +257,8 @@ barber-booking/
 ### 🚀 Development
 
 - **Client:** http://localhost:5173
-- **Server:** http://localhost:5000
-- **API:** http://localhost:5000/api
+- **Server:** http://localhost:3000
+- **API:** http://localhost:3000/api
 
 ---
 
@@ -326,8 +276,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 <div align="center">
 
-**Made with ❤️ by [Your Name]**
+**Made with ❤️ by [Ngo Dinh Nam]**
 
-[⭐ Star this repo](https://github.com/your-username/barber-booking) • [🐛 Report Bug](https://github.com/your-username/barber-booking/issues) • [💡 Request Feature](https://github.com/your-username/barber-booking/issues)
+[⭐ Star this repo](https://github.com/naminc/barber-booking-system.git) • [🐛 Report Bug](https://github.com/naminc/barber-booking-system/issues) • [💡 Request Feature](https://github.com/naminc/barber-booking-system/issues)
 
 </div>
