@@ -10,49 +10,38 @@ import {
 } from "react-icons/fa";
 import { useBookingContext } from "../context/BookingContext";
 import { useNavigate } from "react-router-dom";
+import { useStaff } from "../hooks";
+import LoadingState from "../components/LoadingState";
 import "../theme.css";
 
 const SelectBarber = () => {
   const { bookingData, updateBookingData } = useBookingContext();
   const navigate = useNavigate();
+  const { staff, loading, error } = useStaff();
   const [selectedBarber, setSelectedBarber] = useState(
     bookingData.barber || ""
   );
 
-  const barbers = [
-    {
-      name: "Anh Hưng Barber",
-      rating: 5,
-      specialty: "Cắt tóc nam",
-      experience: "8 năm",
-      avatar: "👨‍💼",
-    },
-    {
-      name: "Anh Tuấn",
-      rating: 4.8,
-      specialty: "Cạo râu",
-      experience: "6 năm",
-      avatar: "👨‍🎨",
-    },
-    {
-      name: "Anh Kiên",
-      rating: 4.9,
-      specialty: "Tạo kiểu",
-      experience: "5 năm",
-      avatar: "👨",
-    },
-    {
-      name: "Anh Lộc",
-      rating: 4.7,
-      specialty: "Nhuộm tóc",
-      experience: "7 năm",
-      avatar: "👨‍🔬",
-    },
-  ];
+  // Filter only active staff
+  const activeStaff = staff.filter((member) => member.status === "active");
+
+  // Get image URL helper
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    if (imageUrl.startsWith("http")) return imageUrl;
+    const baseUrl = import.meta.env.VITE_API_URL
+      ? import.meta.env.VITE_API_URL.replace("/api", "")
+      : "http://localhost:3000";
+    return `${baseUrl}${imageUrl}`;
+  };
 
   const handleBarberSelect = (barber) => {
-    setSelectedBarber(barber.name);
-    updateBookingData({ barber: barber.name, barberDetails: barber });
+    setSelectedBarber(barber.id);
+    updateBookingData({
+      barber: barber.name,
+      barberId: barber.id,
+      barberDetails: barber,
+    });
   };
 
   const handleNext = () => {
@@ -67,7 +56,7 @@ const SelectBarber = () => {
     navigate("/booking/select-service");
   };
 
-  const renderStars = (rating) => {
+  const renderStars = (rating = 5) => {
     return (
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
@@ -81,6 +70,48 @@ const SelectBarber = () => {
       </div>
     );
   };
+
+  if (loading) return <LoadingState />;
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
+        <Header />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <p className="text-red-500 mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="barber-btn px-6 py-3 rounded-lg"
+            >
+              Thử lại
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (activeStaff.length === 0) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
+        <Header />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <p className="text-[var(--color-text-muted)] mb-4">
+              Hiện tại chưa có thợ nào sẵn sàng phục vụ
+            </p>
+            <button
+              onClick={() => navigate("/booking/select-service")}
+              className="barber-btn px-6 py-3 rounded-lg"
+            >
+              Quay lại
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
@@ -155,12 +186,12 @@ const SelectBarber = () => {
 
           {/* Barbers Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {barbers.map((barber, index) => (
+            {activeStaff.map((barber, index) => (
               <div
-                key={index}
+                key={barber.id}
                 onClick={() => handleBarberSelect(barber)}
                 className={`group relative overflow-hidden rounded-2xl border-2 transition-all duration-500 cursor-pointer ${
-                  selectedBarber === barber.name
+                  selectedBarber === barber.id
                     ? "border-[var(--color-gold)] bg-gradient-to-br from-[var(--color-gold)]/20 to-[var(--color-gold)]/5 shadow-[0_0_30px_rgba(194,158,117,0.4)] scale-105"
                     : "border-[var(--color-border)] bg-[var(--color-dark-bg2)] hover:border-[var(--color-gold)]/50 hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)] hover:scale-105"
                 }`}
@@ -172,7 +203,7 @@ const SelectBarber = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
 
                 {/* Selection badge */}
-                {selectedBarber === barber.name && (
+                {selectedBarber === barber.id && (
                   <div className="absolute top-4 right-4 w-12 h-12 bg-[var(--color-gold)] rounded-full flex items-center justify-center shadow-lg animate-bounce z-20">
                     <FaCheckCircle className="text-black text-2xl" />
                   </div>
@@ -183,7 +214,7 @@ const SelectBarber = () => {
                   <div className="relative inline-block mb-4">
                     <div
                       className={`absolute inset-0 rounded-full transition-all duration-500 ${
-                        selectedBarber === barber.name
+                        selectedBarber === barber.id
                           ? "bg-gradient-to-r from-[var(--color-gold)] via-[#d4af37] to-[var(--color-gold)] animate-spin-slow p-[3px]"
                           : "bg-[var(--color-gold)]/20 p-[2px]"
                       }`}
@@ -191,13 +222,29 @@ const SelectBarber = () => {
                       <div className="w-full h-full bg-[var(--color-dark-bg2)] rounded-full"></div>
                     </div>
                     <div
-                      className={`relative text-7xl transition-transform duration-300 ${
-                        selectedBarber === barber.name
+                      className={`relative w-28 h-28 mx-auto transition-transform duration-300 ${
+                        selectedBarber === barber.id
                           ? "scale-110"
                           : "group-hover:scale-110"
                       }`}
                     >
-                      {barber.avatar}
+                      {barber.image ? (
+                        <img
+                          src={getImageUrl(barber.image)}
+                          alt={barber.name}
+                          className="w-full h-full object-cover rounded-full"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              barber.name
+                            )}&background=random&size=128`;
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[var(--color-gold)]/30 to-[var(--color-gold)]/10 rounded-full flex items-center justify-center text-6xl">
+                          👨‍💼
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -208,9 +255,9 @@ const SelectBarber = () => {
 
                   {/* Rating with stars */}
                   <div className="flex items-center justify-center gap-2 mb-4 px-3 py-2 bg-[var(--color-dark-bg)]/50 rounded-lg inline-flex">
-                    {renderStars(barber.rating)}
+                    {renderStars(5)}
                     <span className="text-sm text-[var(--color-gold)] font-bold ml-1">
-                      {barber.rating}
+                      5.0
                     </span>
                   </div>
 
@@ -221,19 +268,19 @@ const SelectBarber = () => {
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/30 rounded-full mb-3">
                     <div className="w-2 h-2 bg-[var(--color-gold)] rounded-full animate-pulse"></div>
                     <span className="text-sm text-[var(--color-gold)] font-semibold">
-                      {barber.specialty}
+                      {barber.specialization}
                     </span>
                   </div>
 
                   {/* Experience badge */}
                   <div className="text-xs text-[var(--color-text-muted)] bg-[var(--color-dark-bg)] px-3 py-1 rounded-full inline-block">
                     <FaAward className="inline mr-1 text-[var(--color-gold)]" />
-                    {barber.experience} kinh nghiệm
+                    {barber.experience || "Chuyên nghiệp"} kinh nghiệm
                   </div>
                 </div>
 
                 {/* Bottom highlight line for selected */}
-                {selectedBarber === barber.name && (
+                {selectedBarber === barber.id && (
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-gold)] to-transparent"></div>
                 )}
               </div>

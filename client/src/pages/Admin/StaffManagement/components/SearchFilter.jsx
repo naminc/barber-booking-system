@@ -18,7 +18,7 @@ export default function SearchFilter({
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Tìm kiếm theo tên dịch vụ, mô tả..."
+              placeholder="Tìm theo tên, số điện thoại..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
@@ -34,7 +34,7 @@ export default function SearchFilter({
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white text-gray-900"
             >
               <option value="all">Tất cả trạng thái</option>
-              <option value="active">Hoạt động</option>
+              <option value="active">Đang hoạt động</option>
               <option value="inactive">Không hoạt động</option>
             </select>
           </div>

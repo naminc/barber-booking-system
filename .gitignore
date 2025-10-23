@@ -10,9 +10,9 @@ node_modules/
 .idea/
 
 # Database dump
-backend/db.sql
-!backend/db_sample.sql
+server/db.sql
+!server/db_sample.sql
 
 # Build
-frontend/dist/
-frontend/build/
+client/dist/
+client/build/

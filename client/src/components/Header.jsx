@@ -3,14 +3,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaTimes,
-  FaUserCircle,
-  FaSignOutAlt,
-  FaSignInAlt,
-  FaUserPlus,
 } from "react-icons/fa";
 import { logout } from "../utils/auth";
+import { useSettingsContext } from "../context/SettingsContext";
 
 const Header = () => {
+  const { getSetting } = useSettingsContext();
+
+  const websiteName = getSetting("websiteName");
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -18,13 +18,11 @@ const Header = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
-  // Lấy user từ localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
-  // Click ra ngoài thì đóng dropdown
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -58,7 +56,7 @@ const Header = () => {
           className="font-bold text-xl hover:text-white transition-all duration-200"
           onClick={() => setMenuOpen(false)}
         >
-          NAMINC BARBER
+          {websiteName}
         </Link>
 
         {/* Nút menu mobile */}

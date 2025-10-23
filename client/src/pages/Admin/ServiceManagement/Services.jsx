@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, RefreshCw } from "lucide-react";
+import { Plus, RefreshCw, Scissors } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useServices } from "../../../hooks";
 import LoadingState from "../../../components/LoadingState";
@@ -92,11 +92,16 @@ export default function Services() {
       {/* Header */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Quản lý dịch vụ
-            </h1>
-            <p className="text-gray-600 mt-1">Quản lý dịch vụ của cửa hàng</p>
+          <div className="flex items-center">
+            <div className="p-3 bg-orange-100 rounded-lg">
+              <Scissors className="h-6 w-6 text-orange-600" />
+            </div>
+            <div className="ml-4">
+              <h1 className="text-2xl font-bold text-gray-900">
+                Quản lý dịch vụ
+              </h1>
+              <p className="text-gray-600 mt-1">Quản lý dịch vụ của cửa hàng</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <button

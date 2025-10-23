@@ -21,7 +21,7 @@ import EditProfile from "./pages/EditProfile";
 import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/Admin/Dashboard";
 import Settings from "./pages/Admin/Settings";
-import Staff from "./pages/Admin/Staff";
+import Staff from "./pages/Admin/StaffManagement/Staff";
 import Bookings from "./pages/Admin/Bookings";
 import Users from "./pages/Admin/UserManagement/Users";
 import AddUser from "./pages/Admin/UserManagement/AddUser";
@@ -30,7 +30,9 @@ import AdminServices from "./pages/Admin/ServiceManagement/Services";
 import AddService from "./pages/Admin/ServiceManagement/AddService";
 import EditService from "./pages/Admin/ServiceManagement/EditService";
 import AddBooking from "./pages/Admin/AddBooking";
-import AddStaff from "./pages/Admin/AddStaff";
+import AddStaff from "./pages/Admin/StaffManagement/AddStaff";
+import EditStaff from "./pages/Admin/StaffManagement/EditStaff";
+import Contacts from "./pages/Admin/Contacts";
 import { BookingProvider } from "./context/BookingContext";
 import { SettingsProvider } from "./context/SettingsContext";
 import GuestRoute from "./routes/GuestRoute";
@@ -87,6 +89,7 @@ export default function App() {
               <Route path="settings" element={<Settings />} />
               <Route path="staff" element={<Staff />} />
               <Route path="staff/add" element={<AddStaff />} />
+              <Route path="staff/edit/:id" element={<EditStaff />} />
               <Route path="services" element={<AdminServices />} />
               <Route path="services/add" element={<AddService />} />
               <Route path="services/edit/:id" element={<EditService />} />
@@ -95,6 +98,7 @@ export default function App() {
               <Route path="users" element={<Users />} />
               <Route path="users/add" element={<AddUser />} />
               <Route path="users/edit/:id" element={<EditUser />} />
+              <Route path="contacts" element={<Contacts />} />
             </Route>
           </Route>
           <Route path="/403" element={<Forbidden />} />

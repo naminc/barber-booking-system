@@ -1,10 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import { useSettingsContext } from "../context/SettingsContext";
+import contactsApi from "../api/contactsApi";
+
 const Contact = () => {
   const { getSetting } = useSettingsContext();
   const shopEmail = getSetting("email");
   const shopPhone = getSetting("phone");
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.message
+    ) {
+      alert("Vui lòng điền đầy đủ thông tin!");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await contactsApi.createContact({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: `Liên hệ từ ${formData.name} - ${formData.phone}`,
+        message: formData.message,
+      });
+
+      setSuccess(true);
+      setFormData({ name: "", email: "", phone: "", message: "" });
+
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (error) {
+      alert(error.response?.data?.error || "Có lỗi xảy ra. Vui lòng thử lại!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section
       id="contact"
@@ -37,40 +91,66 @@ const Contact = () => {
               href={`tel:${shopPhone}`}
               className="hover:text-[#c29e75] transition-all duration-200"
             >
-              {shopPhone }
+              {shopPhone}
             </a>
           </div>
 
-          <div className="flex flex-col w-full gap-5 mt-4">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col w-full gap-5 mt-4"
+          >
             <input
               className="bg-transparent py-2 border-b border-[#c29e75]/50 pl-1 text-[#fdf8f2] placeholder:text-gray-400 outline-none focus:border-[#c29e75] transition-all duration-200"
               type="text"
-              placeholder="Họ và tên của bạn"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Họ và tên của bạn *"
+              required
             />
             <input
               className="bg-transparent py-2 border-b border-[#c29e75]/50 pl-1 text-[#fdf8f2] placeholder:text-gray-400 outline-none focus:border-[#c29e75] transition-all duration-200"
-              type="phone"
-              placeholder="Số điện thoại"
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="Số điện thoại *"
+              required
             />
             <input
               className="bg-transparent py-2 border-b border-[#c29e75]/50 pl-1 text-[#fdf8f2] placeholder:text-gray-400 outline-none focus:border-[#c29e75] transition-all duration-200"
               type="email"
-              placeholder="Email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email *"
+              required
             />
             <textarea
               rows="4"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
               className="bg-transparent py-2 border-b border-[#c29e75]/50 pl-1 text-[#fdf8f2] placeholder:text-gray-400 outline-none focus:border-[#c29e75] transition-all duration-200 resize-none"
-              placeholder="Lời nhắn của bạn..."
+              placeholder="Lời nhắn của bạn... *"
+              required
             ></textarea>
-          </div>
 
-          <button
-            type="submit"
-            className="mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-[#c29e75] to-[#a47e4f] text-black font-semibold uppercase py-2 px-6 rounded-full shadow-md hover:shadow-[#c29e75]/40 hover:scale-105 transition-all duration-300"
-          >
-            <FaPaperPlane className="text-lg" />
-            Gửi liên hệ
-          </button>
+            {success && (
+              <div className="text-green-400 text-sm bg-green-900/20 border border-green-400/30 rounded-lg px-4 py-2">
+                ✓ Gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm nhất.
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-[#c29e75] to-[#a47e4f] text-black font-semibold uppercase py-2 px-6 rounded-full shadow-md hover:shadow-[#c29e75]/40 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FaPaperPlane className="text-lg" />
+              {loading ? "Đang gửi..." : "Gửi liên hệ"}
+            </button>
+          </form>
         </div>
       </div>
     </section>

@@ -8,3 +8,5 @@ export { useAuth } from "./useAuth";
 export { useUsers } from "./useUsers";
 export { useServices } from "./useServices";
 export { usePageTitle } from "./usePageTitle";
+export { useStaff } from "./useStaff";
+export { useContacts } from "./useContacts";

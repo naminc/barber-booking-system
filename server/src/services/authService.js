@@ -45,8 +45,6 @@ exports.login = async (email, password) => {
     if (!valid) {
       throw new Error("Mật khẩu không chính xác");
     }
-
-    // Check if user account is active
     if (user.status === "inactive") {
       throw new Error(
         "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên"

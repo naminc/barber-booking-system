@@ -24,7 +24,6 @@ export default function Settings() {
   const [initialSettings, setInitialSettings] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  // Sync context settings to local state
   useEffect(() => {
     if (contextSettings) {
       setSettings(contextSettings);
@@ -48,7 +47,7 @@ export default function Settings() {
       setSubmitting(true);
       await updateContextSettings(settings);
       setInitialSettings(settings);
-      await fetchSettings(); // Refresh settings in context
+      await fetchSettings();
       toast.success("Cập nhật thành công!");
     } catch (err) {
       toast.error(err.message || "Cập nhật thất bại. Vui lòng thử lại.");
@@ -131,9 +130,6 @@ export default function Settings() {
               placeholder="Nhập tiêu đề website..."
               required
             />
-            <p className="mt-1 text-sm text-gray-500">
-              Đây sẽ là tiêu đề của trang web trong các tab và kết quả tìm kiếm
-            </p>
           </div>
 
           <div>
@@ -155,10 +151,6 @@ export default function Settings() {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="barber, salon, haircut, booking, cắt tóc nam, đặt lịch..."
             />
-            <p className="mt-1 text-sm text-gray-500">
-              Phân tách từ khóa bằng dấu phẩy. Các từ khóa này giúp tối ưu hóa
-              tìm kiếm của trang web
-            </p>
           </div>
           <div>
             <label
@@ -176,11 +168,28 @@ export default function Settings() {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="Mô tả ngắn về website..."
             />
-            <p className="mt-1 text-sm text-gray-500">
-              Đây sẽ là mô tả của trang web trong kết quả tìm kiếm
-            </p>
           </div>
-
+          {/* Tên website */}
+          <div>
+            <label
+              htmlFor="websiteName"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              <div className="flex items-center">
+                <Globe className="h-4 w-4 text-gray-400 mr-1" />
+                Tên website
+              </div>
+            </label>
+            <input
+              type="text"
+              id="websiteName"
+              name="websiteName"
+              value={settings.websiteName || ""}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
+              placeholder="NAMINC"
+            />
+          </div>
           {/* Domain */}
           <div>
             <label

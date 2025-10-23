@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserPlus, RefreshCw } from "lucide-react";
+import { UserPlus, RefreshCw, Users as UsersIcon } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useUsers } from "../../../hooks";
 import LoadingState from "../../../components/LoadingState";
@@ -91,11 +91,16 @@ export default function Users() {
       {/* Header */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Quản lý người dùng
-            </h1>
-            <p className="text-gray-600 mt-1">Quản lý thông tin khách hàng</p>
+          <div className="flex items-center">
+            <div className="p-3 bg-purple-100 rounded-lg">
+              <UsersIcon className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="ml-4">
+              <h1 className="text-2xl font-bold text-gray-900">
+                Quản lý người dùng
+              </h1>
+              <p className="text-gray-600 mt-1">Quản lý thông tin khách hàng</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <button

@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, Search, LogOut } from "lucide-react";
 import { logout } from "../../utils/auth";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function AdminNavbar({ onToggleSidebar, sidebarOpen }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const navigate = useNavigate();
+  const { getCurrentUser } = useAuth();
+  const user = getCurrentUser();
   const handleLogout = () => {
     if (window.confirm("Bạn có chắc muốn đăng xuất?")) {
       logout(navigate);
@@ -49,13 +52,19 @@ export default function AdminNavbar({ onToggleSidebar, sidebarOpen }) {
                 <div className="flex-shrink-0">
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt="Admin"
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      user?.name || "Admin"
+                    )}&background=3b82f6&color=fff`}
+                    alt={user?.name || "Admin"}
                   />
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium text-gray-900">Admin</p>
-                  <p className="text-xs text-gray-500">admin@naminc.dev</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {user?.name || "Admin"}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {user?.email || "admin@admin.com"}
+                  </p>
                 </div>
               </button>
               {showProfileMenu && (

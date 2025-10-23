@@ -5,10 +5,9 @@ import { useSettingsContext } from "../context/SettingsContext";
 const Footer = () => {
   const { getSetting } = useSettingsContext();
 
-  const shopTitle = getSetting("title");
   const shopOwner = getSetting("owner");
   const description = getSetting("description");
-
+  const websiteName = getSetting("websiteName");
   return (
     <footer
       id="footer"
@@ -19,17 +18,9 @@ const Footer = () => {
           {description}
         </p>
         <p className="text-gray-300 text-sm">
-          © {new Date().getFullYear()} {shopTitle}
-          {" . "}
-          Thiết kế bởi{" "}
-          <a
-            href="https://naminc.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#c29e75] hover:text-[#e8c891] transition-all duration-300"
-          >
-            @{shopOwner}
-          </a>
+          © {new Date().getFullYear()} {websiteName}
+          {" . "}All rights reserved.
+          Developed by <a href={`https://naminc.dev`} target="_blank" rel="noopener noreferrer" className="text-[#c29e75] hover:text-[#e8c891] transition-all duration-300">@{shopOwner}</a>
         </p>
 
         <div className="flex gap-6 text-2xl justify-center">

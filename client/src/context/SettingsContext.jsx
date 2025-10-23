@@ -12,11 +12,9 @@ export function SettingsProvider({ children }) {
     try {
       setLoading(true);
       const data = await settingsApi.getSettings();
-      console.log("Settings loaded:", data); // Debug
       setSettings(data || {});
       setError(null);
     } catch (err) {
-      console.error("Failed to fetch settings:", err);
       setSettings({});
       setError(null);
     } finally {

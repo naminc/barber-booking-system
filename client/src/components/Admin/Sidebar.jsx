@@ -8,8 +8,11 @@ import {
   Users,
   MessageCircle,
 } from "lucide-react";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Sidebar({ isOpen, onClose }) {
+  const { getCurrentUser } = useAuth();
+  const user = getCurrentUser();
   const menuItems = [
     {
       name: "Bảng điều khiển",
@@ -78,7 +81,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   </div>
                 </div>
                 <div className="ml-3">
-                  <h1 className="text-white text-lg font-semibold">NAMINC</h1>
+                  <h1 className="text-white text-lg font-semibold">ADMIN</h1>
                 </div>
               </div>
             </div>
@@ -123,13 +126,19 @@ export default function Sidebar({ isOpen, onClose }) {
                 <div className="flex-shrink-0">
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt="Admin"
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      user?.name || "Admin"
+                    )}&background=3b82f6&color=fff`}
+                    alt={user?.name || "Admin"}
                   />
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">Admin</p>
-                  <p className="text-xs text-gray-400">admin@naminc.dev</p>
+                  <p className="text-sm font-medium text-white">
+                    {user?.name || "Admin"}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    {user?.email || "admin@admin.com"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -150,9 +159,7 @@ export default function Sidebar({ isOpen, onClose }) {
               <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Scissors className="h-5 w-5 text-white" />
               </div>
-              <h1 className="ml-3 text-white text-lg font-semibold">
-                Barber Admin
-              </h1>
+              <h1 className="ml-3 text-white text-lg font-semibold">ADMIN</h1>
             </div>
             <button
               onClick={onClose}
@@ -204,13 +211,19 @@ export default function Sidebar({ isOpen, onClose }) {
               <div className="flex-shrink-0">
                 <img
                   className="h-8 w-8 rounded-full"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt="Admin"
+                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    user?.name || "Admin"
+                  )}&background=3b82f6&color=fff`}
+                  alt={user?.name || "Admin"}
                 />
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-white">Admin User</p>
-                <p className="text-xs text-gray-400">admin@barbershop.com</p>
+                <p className="text-sm font-medium text-white">
+                  {user?.name || "Admin"}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {user?.email || "admin@admin.com"}
+                </p>
               </div>
             </div>
           </div>
