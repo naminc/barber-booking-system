@@ -6,7 +6,7 @@ const Footer = () => {
   const { getSetting } = useSettingsContext();
 
   const shopOwner = getSetting("owner");
-  const description = getSetting("description");
+  const slogan = getSetting("slogan");
   const websiteName = getSetting("websiteName");
   return (
     <footer
@@ -15,7 +15,7 @@ const Footer = () => {
     >
       <div className="w-full text-center py-10 flex flex-col items-center gap-5">
         <p className="text-[#c29e75] text-lg font-semibold font-RobotoCondensed tracking-wide">
-          {description}
+          {slogan}
         </p>
         <p className="text-gray-300 text-sm">
           © {new Date().getFullYear()} {websiteName}

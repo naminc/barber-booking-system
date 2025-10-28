@@ -13,7 +13,6 @@ import "../theme.css";
 const Register = () => {
   const navigate = useNavigate();
   
-  // Custom hooks
   const { values: form, handleChange } = useForm({
     name: "",
     email: "",

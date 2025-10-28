@@ -7,6 +7,7 @@ import {
   Link,
   Phone,
   RefreshCw,
+  MessageCircle,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useSettingsContext } from "../../context/SettingsContext";
@@ -190,6 +191,28 @@ export default function Settings() {
               placeholder="NAMINC"
             />
           </div>
+
+          {/* Tên website */}
+          <div>
+            <label
+              htmlFor="slogan"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              <div className="flex items-center">
+                <MessageCircle className="h-4 w-4 text-gray-400 mr-1" />
+                Slogan
+              </div>
+            </label>
+            <input
+              type="text"
+              id="slogan"
+              name="slogan"
+              value={settings.slogan || ""}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
+              placeholder="Nhập slogan của website..."
+            />
+          </div>
           {/* Domain */}
           <div>
             <label
@@ -210,9 +233,6 @@ export default function Settings() {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="https://naminc.dev"
             />
-            <p className="mt-1 text-sm text-gray-500">
-              Đây là tên miền chính của trang web
-            </p>
           </div>
         </form>
       </div>

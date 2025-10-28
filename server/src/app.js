@@ -19,7 +19,7 @@ app.set("json spaces", 2);
 app.use("/uploads", express.static("public/uploads"));
 
 // Test routes
-app.get("/", (req, res) => res.send("Hello NodeJS Backend"));
+app.get("/", (req, res) => res.send("Hello NodeJS Backend!"));
 app.get("/api/status", (req, res) =>
   res.json({ status: "Running", time: new Date() })
 );
