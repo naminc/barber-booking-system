@@ -1,9 +1,12 @@
 {
-  "dependencies": {
-    "axios": "^1.12.2",
-    "bootstrap": "^5.3.8",
-    "joi": "^18.0.1",
-    "react-bootstrap": "^2.10.10",
-    "react-router-dom": "^7.9.4"
+  "name": "barber-root",
+  "private": true,
+  "scripts": {
+    "client": "npm run dev --prefix client",
+    "server": "npm run dev --prefix server",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }
