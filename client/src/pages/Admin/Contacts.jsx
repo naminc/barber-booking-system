@@ -14,6 +14,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useContacts } from "../../hooks";
 import LoadingState from "../../components/LoadingState";
 import ErrorState from "../../components/ErrorState";
+import { formatDateTime } from "../../utils/dateHelpers";
 
 export default function Contacts() {
   const {
@@ -57,17 +58,6 @@ export default function Contacts() {
     } finally {
       setUpdatingStatus(null);
     }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
   };
 
   if (loading) return <LoadingState />;
@@ -236,7 +226,7 @@ export default function Contacts() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center text-sm text-gray-500">
                           <Calendar className="h-4 w-4 mr-2" />
-                          {formatDate(contact.created_at)}
+                          {formatDateTime(contact.created_at)}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

@@ -10,3 +10,4 @@ export { useServices } from "./useServices";
 export { usePageTitle } from "./usePageTitle";
 export { useStaff } from "./useStaff";
 export { useContacts } from "./useContacts";
+export { useAppointments } from "./useAppointments";

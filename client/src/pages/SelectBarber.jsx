@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 import Header from "../components/Header";
+import BookingProgressIndicator from "../components/BookingProgressIndicator";
 import {
   FaUserTie,
   FaArrowRight,
@@ -12,6 +14,7 @@ import { useBookingContext } from "../context/BookingContext";
 import { useNavigate } from "react-router-dom";
 import { useStaff } from "../hooks";
 import LoadingState from "../components/LoadingState";
+import { getImageUrl } from "../utils/formatHelpers";
 import "../theme.css";
 
 const SelectBarber = () => {
@@ -25,16 +28,6 @@ const SelectBarber = () => {
   // Filter only active staff
   const activeStaff = staff.filter((member) => member.status === "active");
 
-  // Get image URL helper
-  const getImageUrl = (imageUrl) => {
-    if (!imageUrl) return null;
-    if (imageUrl.startsWith("http")) return imageUrl;
-    const baseUrl = import.meta.env.VITE_API_URL
-      ? import.meta.env.VITE_API_URL.replace("/api", "")
-      : "http://localhost:3000";
-    return `${baseUrl}${imageUrl}`;
-  };
-
   const handleBarberSelect = (barber) => {
     setSelectedBarber(barber.id);
     updateBookingData({
@@ -46,7 +39,7 @@ const SelectBarber = () => {
 
   const handleNext = () => {
     if (!selectedBarber) {
-      alert("Vui lòng chọn thợ barber trước khi tiếp tục");
+      toast.warning("Vui lòng chọn thợ barber trước khi tiếp tục");
       return;
     }
     navigate("/booking/select-time");
@@ -133,42 +126,7 @@ const SelectBarber = () => {
           </div>
 
           {/* Progress Indicator */}
-          <div className="flex justify-center mb-12 px-4">
-            <div className="flex items-center space-x-2 sm:space-x-4 max-w-full">
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">
-                    1
-                  </span>
-                </div>
-                <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
-                  Dịch vụ
-                </span>
-              </div>
-              <div className="w-8 sm:w-16 h-0.5 bg-[var(--color-gold)]"></div>
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">
-                    2
-                  </span>
-                </div>
-                <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
-                  Barber
-                </span>
-              </div>
-              <div className="w-8 sm:w-16 h-0.5 bg-[var(--color-border)]"></div>
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-border)] rounded-full flex items-center justify-center">
-                  <span className="text-[var(--color-text-muted)] font-bold text-sm sm:text-base">
-                    3
-                  </span>
-                </div>
-                <span className="text-[var(--color-text-muted)] text-xs sm:text-sm mt-1">
-                  Thời gian
-                </span>
-              </div>
-            </div>
-          </div>
+          <BookingProgressIndicator currentStep={2} />
 
           {/* Selected Service Info */}
           {bookingData.service && (

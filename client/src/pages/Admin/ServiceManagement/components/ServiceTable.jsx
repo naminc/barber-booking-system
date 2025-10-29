@@ -6,6 +6,8 @@ import {
   Clock,
   Loader2,
 } from "lucide-react";
+import { formatShortDate, formatTime } from "../../../../utils/dateHelpers";
+import { formatPrice, getImageUrl } from "../../../../utils/formatHelpers";
 
 function StatusBadge({ status }) {
   const config = {
@@ -23,20 +25,6 @@ function StatusBadge({ status }) {
 }
 
 export default function ServiceTable({ services, onEdit, onDelete, deleting }) {
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
-
-  // Convert relative path to full URL for display
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return "";
-    if (imagePath.startsWith("http")) return imagePath;
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-    return `${apiUrl.replace("/api", "")}${imagePath}`;
-  };
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -118,15 +106,9 @@ export default function ServiceTable({ services, onEdit, onDelete, deleting }) {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {service.created_at ? (
                     <div className="flex flex-col">
-                      <span>
-                        {new Date(service.created_at).toLocaleDateString(
-                          "vi-VN"
-                        )}
-                      </span>
+                      <span>{formatShortDate(service.created_at)}</span>
                       <span className="text-xs text-gray-400">
-                        {new Date(service.created_at).toLocaleTimeString(
-                          "vi-VN"
-                        )}
+                        {formatTime(service.created_at)}
                       </span>
                     </div>
                   ) : (
@@ -136,15 +118,9 @@ export default function ServiceTable({ services, onEdit, onDelete, deleting }) {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {service.updated_at ? (
                     <div className="flex flex-col">
-                      <span>
-                        {new Date(service.updated_at).toLocaleDateString(
-                          "vi-VN"
-                        )}
-                      </span>
+                      <span>{formatShortDate(service.updated_at)}</span>
                       <span className="text-xs text-gray-400">
-                        {new Date(service.updated_at).toLocaleTimeString(
-                          "vi-VN"
-                        )}
+                        {formatTime(service.updated_at)}
                       </span>
                     </div>
                   ) : (

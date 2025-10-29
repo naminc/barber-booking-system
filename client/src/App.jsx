@@ -1,4 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -22,7 +24,7 @@ import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/Admin/Dashboard";
 import Settings from "./pages/Admin/Settings";
 import Staff from "./pages/Admin/StaffManagement/Staff";
-import Bookings from "./pages/Admin/Bookings";
+import Appointments from "./pages/Admin/AppointmentManagement/Appointments";
 import Users from "./pages/Admin/UserManagement/Users";
 import AddUser from "./pages/Admin/UserManagement/AddUser";
 import EditUser from "./pages/Admin/UserManagement/EditUser";
@@ -93,7 +95,7 @@ export default function App() {
               <Route path="services" element={<AdminServices />} />
               <Route path="services/add" element={<AddService />} />
               <Route path="services/edit/:id" element={<EditService />} />
-              <Route path="bookings" element={<Bookings />} />
+              <Route path="bookings" element={<Appointments />} />
               <Route path="bookings/add" element={<AddBooking />} />
               <Route path="users" element={<Users />} />
               <Route path="users/add" element={<AddUser />} />
@@ -103,6 +105,18 @@ export default function App() {
           </Route>
           <Route path="/403" element={<Forbidden />} />
         </Routes>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </BookingProvider>
     </SettingsProvider>
   );

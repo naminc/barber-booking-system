@@ -10,6 +10,7 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const contactRoutes = require("./routes/contactRoutes");
+const appointmentRoutes = require("./routes/appointmentRoutes");
 const app = express();
 
 // Middleware
@@ -33,5 +34,6 @@ app.use("/api/settings", settingRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/contacts", contactRoutes);
+app.use("/api/appointments", appointmentRoutes);
 
 module.exports = app;

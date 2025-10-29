@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import Header from "../components/Header";
+import BookingProgressIndicator from "../components/BookingProgressIndicator";
 import {
   FaClock,
   FaArrowRight,
@@ -12,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { useBookingContext } from "../context/BookingContext";
 import { useNavigate } from "react-router-dom";
+import { formatDate } from "../utils/dateHelpers";
 import "../theme.css";
 
 const SelectTime = () => {
@@ -69,11 +72,11 @@ const SelectTime = () => {
 
   const handleNext = () => {
     if (!selectedDate) {
-      alert("Vui lòng chọn ngày hẹn");
+      toast.warning("Vui lòng chọn ngày hẹn");
       return;
     }
     if (!selectedTime) {
-      alert("Vui lòng chọn giờ hẹn");
+      toast.warning("Vui lòng chọn giờ hẹn");
       return;
     }
     navigate("/booking/confirmation");
@@ -81,17 +84,6 @@ const SelectTime = () => {
 
   const handleBack = () => {
     navigate("/booking/select-barber");
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
   };
 
   const getMinDate = () => {
@@ -125,42 +117,7 @@ const SelectTime = () => {
           </div>
 
           {/* Progress Indicator */}
-          <div className="flex justify-center mb-12 px-4">
-            <div className="flex items-center space-x-2 sm:space-x-4 max-w-full">
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">
-                    1
-                  </span>
-                </div>
-                <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
-                  Dịch vụ
-                </span>
-              </div>
-              <div className="w-8 sm:w-16 h-0.5 bg-[var(--color-gold)]"></div>
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">
-                    2
-                  </span>
-                </div>
-                <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
-                  Barber
-                </span>
-              </div>
-              <div className="w-8 sm:w-16 h-0.5 bg-[var(--color-gold)]"></div>
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">
-                    3
-                  </span>
-                </div>
-                <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
-                  Thời gian
-                </span>
-              </div>
-            </div>
-          </div>
+          <BookingProgressIndicator currentStep={3} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Booking Form */}

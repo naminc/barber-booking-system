@@ -1,9 +1,16 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 import Header from "../components/Header";
+import BookingProgressIndicator from "../components/BookingProgressIndicator";
 import { FaCut, FaArrowRight, FaClock, FaCheckCircle } from "react-icons/fa";
 import { useBookingContext } from "../context/BookingContext";
 import { useNavigate } from "react-router-dom";
 import { useServices } from "../hooks";
+import {
+  formatPrice,
+  getImageUrl,
+  getServiceIcon,
+} from "../utils/formatHelpers";
 import "../theme.css";
 
 const SelectService = () => {
@@ -14,33 +21,7 @@ const SelectService = () => {
     bookingData.service || ""
   );
 
-  // Lọc chỉ lấy dịch vụ active
   const services = allServices.filter((s) => s.status === "active");
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
-
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith("http")) return imagePath;
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-    return `${apiUrl.replace("/api", "")}${imagePath}`;
-  };
-
-  const getServiceIcon = (name) => {
-    const lowerName = name.toLowerCase();
-    if (lowerName.includes("cắt")) return "✂️";
-    if (lowerName.includes("râu") || lowerName.includes("cạo")) return "🪒";
-    if (lowerName.includes("uốn")) return "💇";
-    if (lowerName.includes("nhuộm") || lowerName.includes("màu")) return "🎨";
-    if (lowerName.includes("gội") || lowerName.includes("massage")) return "🧴";
-    if (lowerName.includes("combo")) return "💫";
-    return "✨";
-  };
 
   const handleServiceSelect = (service) => {
     setSelectedService(service.id);
@@ -57,7 +38,7 @@ const SelectService = () => {
 
   const handleNext = () => {
     if (!selectedService) {
-      alert("Vui lòng chọn dịch vụ trước khi tiếp tục");
+      toast.warning("Vui lòng chọn dịch vụ trước khi tiếp tục");
       return;
     }
     navigate("/booking/select-barber");
@@ -83,42 +64,7 @@ const SelectService = () => {
           </div>
 
           {/* Progress Indicator */}
-          <div className="flex justify-center mb-12 px-4">
-            <div className="flex items-center space-x-2 sm:space-x-4 max-w-full">
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">
-                    1
-                  </span>
-                </div>
-                <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
-                  Dịch vụ
-                </span>
-              </div>
-              <div className="w-8 sm:w-16 h-0.5 bg-[var(--color-border)]"></div>
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-border)] rounded-full flex items-center justify-center">
-                  <span className="text-[var(--color-text-muted)] font-bold text-sm sm:text-base">
-                    2
-                  </span>
-                </div>
-                <span className="text-[var(--color-text-muted)] text-xs sm:text-sm mt-1">
-                  Barber
-                </span>
-              </div>
-              <div className="w-8 sm:w-16 h-0.5 bg-[var(--color-border)]"></div>
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-border)] rounded-full flex items-center justify-center">
-                  <span className="text-[var(--color-text-muted)] font-bold text-sm sm:text-base">
-                    3
-                  </span>
-                </div>
-                <span className="text-[var(--color-text-muted)] text-xs sm:text-sm mt-1">
-                  Thời gian
-                </span>
-              </div>
-            </div>
-          </div>
+          <BookingProgressIndicator currentStep={1} />
 
           {/* Services Grid */}
           {loading ? (
@@ -234,19 +180,6 @@ const SelectService = () => {
               ))}
             </div>
           )}
-
-          <style>{`
-            @keyframes fadeInUp {
-              from {
-                opacity: 0;
-                transform: translateY(30px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0);
-              }
-            }
-          `}</style>
 
           {/* Next Button */}
           <div className="text-center">

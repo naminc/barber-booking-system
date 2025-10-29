@@ -1,4 +1,5 @@
 import { Edit, Lock, Unlock, Mail, Phone, Loader2 } from "lucide-react";
+import { formatShortDate, formatTime } from "../../../../utils/dateHelpers";
 
 function RoleBadge({ role }) {
   const config = {
@@ -96,11 +97,9 @@ export default function UserTable({ users, onEdit, onToggleStatus, toggling }) {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {user.created_at ? (
                     <div className="flex flex-col">
-                      <span>
-                        {new Date(user.created_at).toLocaleDateString("vi-VN")}
-                      </span>
+                      <span>{formatShortDate(user.created_at)}</span>
                       <span className="text-xs text-gray-400">
-                        {new Date(user.created_at).toLocaleTimeString("vi-VN")}
+                        {formatTime(user.created_at)}
                       </span>
                     </div>
                   ) : (
@@ -110,11 +109,9 @@ export default function UserTable({ users, onEdit, onToggleStatus, toggling }) {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {user.updated_at ? (
                     <div className="flex flex-col">
-                      <span>
-                        {new Date(user.updated_at).toLocaleDateString("vi-VN")}
-                      </span>
+                      <span>{formatShortDate(user.updated_at)}</span>
                       <span className="text-xs text-gray-400">
-                        {new Date(user.updated_at).toLocaleTimeString("vi-VN")}
+                        {formatTime(user.updated_at)}
                       </span>
                     </div>
                   ) : (

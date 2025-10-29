@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import Header from "../components/Header";
+import BookingProgressIndicator from "../components/BookingProgressIndicator";
 import {
   FaCheckCircle,
   FaCalendarAlt,
@@ -11,42 +13,103 @@ import {
   FaEnvelope,
   FaMapMarkerAlt,
   FaArrowLeft,
+  FaUser,
 } from "react-icons/fa";
 import { useBookingContext } from "../context/BookingContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth, useAppointments } from "../hooks";
+import { formatDate } from "../utils/dateHelpers";
 import "../theme.css";
 
 const BookingConfirmation = () => {
   const { bookingData, resetBookingData } = useBookingContext();
   const navigate = useNavigate();
+  const { getCurrentUser } = useAuth();
+  const { createAppointment, loading } = useAppointments();
+  const [customerInfo, setCustomerInfo] = useState({
+    name: "",
+    phone: "",
+  });
 
-  const handleConfirmBooking = () => {
-    // Simulate API call
-    console.log("Booking confirmed:", bookingData);
+  useEffect(() => {
+    const user = getCurrentUser();
+    if (user) {
+      setCustomerInfo({
+        name: user.name || user.username || "",
+        phone: user.phone || "",
+      });
+    }
+  }, []);
 
-    // Show success message
-    alert(
-      "Đặt lịch thành công! Chúng tôi sẽ liên hệ để xác nhận sớm nhất có thể."
-    );
+  const handleCustomerInfoChange = (field, value) => {
+    setCustomerInfo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
-    // Reset booking data and redirect to home
-    resetBookingData();
-    navigate("/");
+  const handleConfirmBooking = async () => {
+    if (!customerInfo.name.trim()) {
+      toast.error("Vui lòng nhập tên của bạn");
+      return;
+    }
+    if (!customerInfo.phone.trim()) {
+      toast.error("Vui lòng nhập số điện thoại");
+      return;
+    }
+    if (!/^[0-9]{10,11}$/.test(customerInfo.phone)) {
+      toast.error("Số điện thoại phải có 10-11 chữ số");
+      return;
+    }
+
+    try {
+      const [year, month, day] = bookingData.date.split("-");
+      const [hours, minutes] = bookingData.time.split(":");
+      const appointmentDateTimeStr = `${year}-${month}-${day} ${hours}:${minutes}:00`;
+      const appointmentData = {
+        customer_name: customerInfo.name,
+        customer_phone: customerInfo.phone,
+        service_id: bookingData.serviceId,
+        staff_id: bookingData.barberId,
+        appointment_date: appointmentDateTimeStr,
+        note: bookingData.notes || "",
+      };
+
+      const response = await createAppointment(appointmentData);
+
+      toast.success(
+        response.message ||
+          "Đặt lịch thành công! Chúng tôi sẽ liên hệ để xác nhận sớm nhất có thể.",
+        {
+          autoClose: 5000,
+        }
+      );
+
+      resetBookingData();
+      setTimeout(() => {
+        navigate("/profile");
+      }, 1500);
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      const errorMessage =
+        error.response?.data?.error ||
+        error.message ||
+        "Có lỗi xảy ra khi đặt lịch";
+
+      if (error.response?.status === 409) {
+        toast.error(errorMessage, {
+          autoClose: 5000,
+        });
+      } else if (error.response?.status === 400) {
+        toast.warning(errorMessage);
+      } else {
+        toast.error(errorMessage);
+      }
+    }
   };
 
   const handleBack = () => {
     navigate("/booking/select-time");
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
   };
 
   return (
@@ -69,46 +132,50 @@ const BookingConfirmation = () => {
           </div>
 
           {/* Progress Indicator */}
-          <div className="flex justify-center mb-12 px-4">
-            <div className="flex items-center space-x-2 sm:space-x-4 max-w-full">
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">
-                    1
-                  </span>
-                </div>
-                <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
-                  Dịch vụ
-                </span>
-              </div>
-              <div className="w-8 sm:w-16 h-0.5 bg-[var(--color-gold)]"></div>
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">
-                    2
-                  </span>
-                </div>
-                <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
-                  Barber
-                </span>
-              </div>
-              <div className="w-8 sm:w-16 h-0.5 bg-[var(--color-gold)]"></div>
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center">
-                  <span className="text-black font-bold text-sm sm:text-base">
-                    3
-                  </span>
-                </div>
-                <span className="text-[var(--color-gold)] font-semibold text-xs sm:text-sm mt-1">
-                  Thời gian
-                </span>
-              </div>
-            </div>
-          </div>
+          <BookingProgressIndicator currentStep={3} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Booking Summary */}
             <div className="lg:col-span-2">
+              {/* Customer Information Form */}
+              <div className="barber-box p-8 mb-6">
+                <h3 className="text-2xl font-bold text-[var(--color-gold)] mb-6 flex items-center gap-2">
+                  <FaUser /> Thông tin khách hàng
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-[var(--color-text-main)]">
+                      Họ và tên *
+                    </label>
+                    <input
+                      type="text"
+                      value={customerInfo.name}
+                      onChange={(e) =>
+                        handleCustomerInfoChange("name", e.target.value)
+                      }
+                      className="barber-input w-full"
+                      placeholder="Nhập họ và tên của bạn"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-[var(--color-text-main)]">
+                      Số điện thoại *
+                    </label>
+                    <input
+                      type="tel"
+                      value={customerInfo.phone}
+                      onChange={(e) =>
+                        handleCustomerInfoChange("phone", e.target.value)
+                      }
+                      className="barber-input w-full"
+                      placeholder="Nhập số điện thoại (10-11 chữ số)"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="barber-box p-8">
                 <h3 className="text-2xl font-bold text-[var(--color-gold)] mb-6 flex items-center gap-2">
                   <FaCheckCircle /> Tóm tắt đặt lịch
@@ -308,10 +375,22 @@ const BookingConfirmation = () => {
 
             <button
               onClick={handleConfirmBooking}
-              className="barber-btn flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105"
+              disabled={loading}
+              className={`barber-btn flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              <FaCheckCircle className="text-base" />
-              <span>Xác nhận đặt lịch</span>
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Đang xử lý...</span>
+                </>
+              ) : (
+                <>
+                  <FaCheckCircle className="text-base" />
+                  <span>Xác nhận đặt lịch</span>
+                </>
+              )}
             </button>
           </div>
         </div>

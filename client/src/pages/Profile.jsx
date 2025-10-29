@@ -9,54 +9,62 @@ import {
 } from "react-icons/fa";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
-import authApi from "../api/authApi";
+import { useAppointments, useUserProfile } from "../hooks";
 import { logout } from "../utils/auth";
+import { parseAppointmentDate } from "../utils/dateHelpers";
+import {
+  getAppointmentStatusText,
+  getAppointmentStatusColor,
+} from "../utils/appointmentHelpers";
 import "../theme.css";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    avatar: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-    role: "",
-  });
-
+  const { userData, loading: userLoading, error: userError } = useUserProfile();
+  const { fetchMyAppointments } = useAppointments();
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [bookingsLoading, setBookingsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchAppointments = async () => {
       try {
-        setLoading(true);
-        const response = await authApi.getProfile();
-        if (response && response.user) {
-          setUser({
-            name: response.user.name || "",
-            email: response.user.email || "",
-            phone: response.user.phone || "",
-            avatar: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-            role: response.user.role || "",
+        setBookingsLoading(true);
+        const appointmentsResponse = await fetchMyAppointments();
+        if (appointmentsResponse && Array.isArray(appointmentsResponse)) {
+          const formattedBookings = appointmentsResponse.map((appointment) => {
+            const { date, time } = parseAppointmentDate(
+              appointment.appointment_date
+            );
+            return {
+              id: appointment.id,
+              date,
+              time,
+              service: appointment.service_name || "N/A",
+              barber: appointment.staff_name || "N/A",
+              status: getAppointmentStatusText(appointment.status),
+            };
           });
+          setBookings(formattedBookings);
         }
+      } catch (appointmentErr) {
+        console.error("Lỗi khi tải lịch hẹn:", appointmentErr);
         setBookings([]);
-        
-      } catch (err) {
-        console.error("Lỗi khi tải thông tin người dùng:", err);
-        setError("Không thể tải thông tin người dùng");
-        if (err.response && err.response.status === 401) {
-          logout(navigate);
-        }
       } finally {
-        setLoading(false);
+        setBookingsLoading(false);
       }
     };
-    fetchUserData();
-  }, [navigate]);
 
-  if (loading) {
+    fetchAppointments();
+  }, [fetchMyAppointments]);
+
+  // Handle auth error
+  useEffect(() => {
+    if (userError && userError.includes("Phiên đăng nhập")) {
+      logout(navigate);
+    }
+  }, [userError, navigate]);
+
+  if (userLoading) {
     return (
       <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
         <Header />
@@ -70,13 +78,13 @@ const Profile = () => {
     );
   }
 
-  if (error) {
+  if (userError) {
     return (
       <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
         <Header />
         <div className="px-4 py-24 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-red-400 text-lg">{error}</p>
+            <p className="text-red-400 text-lg">{userError}</p>
             <button
               onClick={() => window.location.reload()}
               className="barber-btn mt-4 px-6 py-2"
@@ -89,6 +97,10 @@ const Profile = () => {
     );
   }
 
+  if (!userData) {
+    return null;
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
       <Header />
@@ -99,26 +111,27 @@ const Profile = () => {
             <div className="flex items-center gap-6">
               <div className="relative">
                 <img
-                  src={user.avatar}
+                  src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
                   alt="Avatar"
                   className="w-28 h-28 rounded-full border-2 border-[var(--color-gold)] shadow-[0_0_20px_rgba(194,158,117,0.3)] object-cover"
                 />
                 <span className="absolute -bottom-1 -right-1 bg-[var(--color-gold)] text-black text-xs font-semibold px-2 py-0.5 rounded-full">
-                  {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                  {userData.role?.charAt(0).toUpperCase() +
+                    userData.role?.slice(1)}
                 </span>
               </div>
 
               <div>
                 <h2 className="text-3xl font-bold text-[var(--color-gold)] drop-shadow-[0_1px_3px_rgba(194,158,117,0.4)]">
-                  {user.name}
+                  {userData.name}
                 </h2>
                 <p className="flex items-center gap-2 text-gray-300 mt-2">
                   <FaEnvelope className="text-[var(--color-gold)]" />{" "}
-                  {user.email}
+                  {userData.email}
                 </p>
                 <p className="flex items-center gap-2 text-gray-300 mt-1">
                   <FaPhoneAlt className="text-[var(--color-gold)]" />{" "}
-                  {user.phone || "Không có số điện thoại"}
+                  {userData.phone || "Không có số điện thoại"}
                 </p>
               </div>
             </div>
@@ -136,7 +149,12 @@ const Profile = () => {
               <FaCalendarAlt /> Lịch sử đặt lịch
             </h3>
 
-            {bookings.length === 0 ? (
+            {bookingsLoading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-gold)] mx-auto"></div>
+                <p className="text-gray-400 mt-4">Đang tải lịch hẹn...</p>
+              </div>
+            ) : bookings.length === 0 ? (
               <p className="text-gray-400 text-center">
                 Bạn chưa có lịch sử đặt lịch nào.
               </p>
@@ -183,13 +201,9 @@ const Profile = () => {
                           {b.barber}
                         </td>
                         <td
-                          className={`px-4 py-3 font-semibold border-b border-[var(--color-gold)]/20 ${
-                            b.status === "Hoàn thành"
-                              ? "text-emerald-400"
-                              : b.status === "Đã hủy"
-                              ? "text-rose-400"
-                              : "text-amber-300"
-                          }`}
+                          className={`px-4 py-3 font-semibold border-b border-[var(--color-gold)]/20 ${getAppointmentStatusColor(
+                            b.status
+                          )}`}
                         >
                           {b.status}
                         </td>

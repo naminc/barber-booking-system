@@ -1,4 +1,5 @@
 import { Edit, Trash2, Phone, User } from "lucide-react";
+import { getImageUrl } from "../../../../utils/formatHelpers";
 
 export default function StaffTable({
   staff,
@@ -16,17 +17,6 @@ export default function StaffTable({
 
   const getStatusText = (status) => {
     return status === "active" ? "Hoạt động" : "Không hoạt động";
-  };
-
-  const getImageUrl = (imageUrl) => {
-    if (!imageUrl) return null;
-    if (imageUrl.startsWith("http")) return imageUrl;
-
-    // Remove /api from VITE_API_URL to get base URL
-    const baseUrl = import.meta.env.VITE_API_URL
-      ? import.meta.env.VITE_API_URL.replace("/api", "")
-      : "http://localhost:3000";
-    return `${baseUrl}${imageUrl}`;
   };
 
   return (
