@@ -221,8 +221,17 @@ const Appointment = {
     );
     const newServiceDuration = newServiceRows[0]?.duration || 60; // Default 60 minutes
 
-    // Calculate time window to check
-    const appointmentTime = new Date(appointmentDate);
+    // Parse appointment date - handle both formats
+    // Timezone +07:00 (Vietnam) để đảm bảo đúng múi giờ
+    let appointmentTime;
+    if (typeof appointmentDate === "string" && appointmentDate.includes(" ")) {
+      // Format: "YYYY-MM-DD HH:mm:ss"
+      const [datePart, timePart] = appointmentDate.split(" ");
+      appointmentTime = new Date(`${datePart}T${timePart}+07:00`);
+    } else {
+      appointmentTime = new Date(appointmentDate);
+    }
+
     const newAppointmentEnd = new Date(
       appointmentTime.getTime() + newServiceDuration * 60 * 1000
     );
@@ -252,7 +261,21 @@ const Appointment = {
 
     // Check for time slot overlap
     for (const existing of existingAppointments) {
-      const existingStart = new Date(existing.appointment_date);
+      // Parse existing appointment date consistently
+      // Timezone +07:00 (Vietnam) để đảm bảo đúng múi giờ
+      const existingDateStr = existing.appointment_date;
+      let existingStart;
+
+      if (existingDateStr instanceof Date) {
+        existingStart = existingDateStr;
+      } else if (typeof existingDateStr === "string") {
+        // MySQL returns datetime as string in format "YYYY-MM-DD HH:mm:ss"
+        const [datePart, timePart] = existingDateStr.split(" ");
+        existingStart = new Date(`${datePart}T${timePart}+07:00`);
+      } else {
+        existingStart = new Date(existingDateStr);
+      }
+
       const existingDuration = existing.service_duration || 60;
       const existingEnd = new Date(
         existingStart.getTime() + existingDuration * 60 * 1000
@@ -261,6 +284,13 @@ const Appointment = {
       // Check if time slots overlap
       // Overlap occurs if: newStart < existingEnd AND existingStart < newEnd
       if (appointmentTime < existingEnd && existingStart < newAppointmentEnd) {
+        console.log("Conflict detected:", {
+          newStart: appointmentTime.toISOString(),
+          newEnd: newAppointmentEnd.toISOString(),
+          existingStart: existingStart.toISOString(),
+          existingEnd: existingEnd.toISOString(),
+          staffId,
+        });
         return true; // Conflict found
       }
     }
