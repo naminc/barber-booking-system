@@ -35,5 +35,6 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 module.exports = app;

@@ -7,6 +7,7 @@ import {
   X,
   Users,
   MessageCircle,
+  Star,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -43,6 +44,12 @@ export default function Sidebar({ isOpen, onClose }) {
       path: "/admin/users",
       icon: Users,
       description: "Quản lý người dùng",
+    },
+    {
+      name: "Đánh giá",
+      path: "/admin/reviews",
+      icon: Star,
+      description: "Quản lý đánh giá",
     },
     {
       name: "Liên hệ",

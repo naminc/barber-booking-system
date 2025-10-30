@@ -11,3 +11,4 @@ export { usePageTitle } from "./usePageTitle";
 export { useStaff } from "./useStaff";
 export { useContacts } from "./useContacts";
 export { useAppointments } from "./useAppointments";
+export { useReviews } from "./useReviews";

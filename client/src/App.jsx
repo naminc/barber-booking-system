@@ -31,10 +31,11 @@ import EditUser from "./pages/Admin/UserManagement/EditUser";
 import AdminServices from "./pages/Admin/ServiceManagement/Services";
 import AddService from "./pages/Admin/ServiceManagement/AddService";
 import EditService from "./pages/Admin/ServiceManagement/EditService";
-import AddBooking from "./pages/Admin/AddBooking";
+import AddAppointment from "./pages/Admin/AppointmentManagement/AddAppointment";
 import AddStaff from "./pages/Admin/StaffManagement/AddStaff";
 import EditStaff from "./pages/Admin/StaffManagement/EditStaff";
 import Contacts from "./pages/Admin/Contacts";
+import AdminReviews from "./pages/Admin/ReviewManagement/Reviews";
 import { BookingProvider } from "./context/BookingContext";
 import { SettingsProvider } from "./context/SettingsContext";
 import GuestRoute from "./routes/GuestRoute";
@@ -96,11 +97,12 @@ export default function App() {
               <Route path="services/add" element={<AddService />} />
               <Route path="services/edit/:id" element={<EditService />} />
               <Route path="bookings" element={<Appointments />} />
-              <Route path="bookings/add" element={<AddBooking />} />
+              <Route path="bookings/add" element={<AddAppointment />} />
               <Route path="users" element={<Users />} />
               <Route path="users/add" element={<AddUser />} />
               <Route path="users/edit/:id" element={<EditUser />} />
               <Route path="contacts" element={<Contacts />} />
+              <Route path="reviews" element={<AdminReviews />} />
             </Route>
           </Route>
           <Route path="/403" element={<Forbidden />} />

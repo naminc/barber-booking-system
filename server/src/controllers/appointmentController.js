@@ -99,11 +99,13 @@ exports.getByDateRange = async (req, res) => {
 exports.create = async (req, res) => {
   try {
     const {
+      user_id,
       customer_name,
       customer_phone,
       service_id,
       staff_id,
       appointment_date,
+      status,
       note,
     } = req.body;
 
@@ -154,17 +156,27 @@ exports.create = async (req, res) => {
       });
     }
 
-    // Get user_id from authenticated user
-    const user_id = req.user ? req.user.id : null;
+    // Determine user_id:
+    // - If request body explicitly includes user_id (from admin), use it (can be null for walk-in)
+    // - Otherwise, use the authenticated user's id
+    let finalUserId;
+    if (user_id !== undefined) {
+      // Admin explicitly set user_id (can be null)
+      finalUserId = user_id;
+    } else {
+      // Regular user or no user_id in body - use authenticated user's id
+      finalUserId = req.user ? req.user.id : null;
+    }
 
     const appointmentData = {
-      user_id,
+      user_id: finalUserId,
       customer_name,
       customer_phone,
       service_id,
       staff_id,
       appointment_date,
-      status: "pending",
+      // Admin can set custom status, regular users always get 'pending'
+      status: status && req.user && req.user.role === "admin" ? status : "pending",
       note,
     };
 

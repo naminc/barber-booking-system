@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, RefreshCw } from "lucide-react";
+import { Calendar, RefreshCw, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { useAppointments } from "../../../hooks";
@@ -160,7 +160,7 @@ export default function Appointments() {
               onClick={() => navigate("/admin/bookings/add")}
               className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
             >
-              <Calendar className="h-4 w-4" />
+              <Plus className="h-4 w-4" />
               Thêm lịch hẹn
             </button>
           </div>

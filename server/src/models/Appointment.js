@@ -261,8 +261,6 @@ const Appointment = {
 
     // Check for time slot overlap
     for (const existing of existingAppointments) {
-      // Parse existing appointment date consistently
-      // Timezone +07:00 (Vietnam) để đảm bảo đúng múi giờ
       const existingDateStr = existing.appointment_date;
       let existingStart;
 
