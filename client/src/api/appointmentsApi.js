@@ -62,6 +62,11 @@ const appointmentsApi = {
   getAppointmentStats: () => {
     return axiosClient.get("/appointments/stats");
   },
+
+  // Hủy appointment (user)
+  cancelAppointment: (id) => {
+    return axiosClient.post(`/appointments/${id}/cancel`);
+  },
 };
 
 export default appointmentsApi;

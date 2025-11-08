@@ -90,7 +90,6 @@ const BookingConfirmation = () => {
         navigate("/profile");
       }, 1500);
     } catch (error) {
-      console.error("Error creating appointment:", error);
       const errorMessage =
         error.response?.data?.error ||
         error.message ||

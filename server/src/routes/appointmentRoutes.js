@@ -30,6 +30,7 @@ router.put(
   appointmentController.update
 );
 router.delete("/:id", verifyToken, appointmentController.delete);
+router.post("/:id/cancel", verifyToken, appointmentController.cancel);
 
 // Admin routes
 router.get(

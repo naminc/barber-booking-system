@@ -1,14 +1,20 @@
 import React from "react";
 import "../theme.css"; // để kế thừa màu vàng ánh kim
-
+import { useSettingsContext } from "../context/SettingsContext";
+import { formatPhoneForTel, formatPhoneForDisplay } from "../utils/phoneHelper";
 const Hours = () => {
+  const { getSetting } = useSettingsContext();
+  const shopOwner = getSetting("owner");
+  const shopPhone = getSetting("phone");
+  const shopPhoneDisplay = formatPhoneForDisplay(shopPhone);
+  const shopPhoneTel = formatPhoneForTel(shopPhone);
   const days = [
-    { day: "Mon", time: "10:00 AM - 8:00 PM" },
-    { day: "Tue", time: "10:00 AM - 8:00 PM" },
-    { day: "Wed", time: "10:00 AM - 8:00 PM" },
-    { day: "Thu", time: "10:00 AM - 8:00 PM" },
-    { day: "Fri", time: "10:00 AM - 8:00 PM" },
-    { day: "Sat", time: "10:00 AM - 8:00 PM" },
+    { day: "Mon", time: "9:00 AM - 7:00 PM" },
+    { day: "Tue", time: "9:00 AM - 7:00 PM" },
+    { day: "Wed", time: "9:00 AM - 7:00 PM" },
+    { day: "Thu", time: "9:00 AM - 7:00 PM" },
+    { day: "Fri", time: "9:00 AM - 7:00 PM" },
+    { day: "Sat", time: "9:00 AM - 7:00 PM" },
     { day: "Sun", time: "Đóng cửa" },
   ];
 
@@ -21,7 +27,8 @@ const Hours = () => {
             Thời gian làm việc
           </h3>
           <p className="text-gray-400 text-center max-w-md">
-            Chúng tôi luôn sẵn sàng phục vụ bạn với phong cách chuyên nghiệp và tận tâm.
+            Chúng tôi luôn sẵn sàng phục vụ bạn với phong cách chuyên nghiệp và
+            tận tâm.
           </p>
 
           <div className="flex flex-wrap justify-center items-center gap-5 mt-10">
@@ -54,10 +61,10 @@ const Hours = () => {
               Đặt lịch? Gọi chúng tôi ngay
             </h2>
             <a
-              href="tel:+84347101143"
+              href={`tel:${shopPhoneTel}`}
               className="text-2xl font-bold text-white hover:text-[var(--color-gold)] transition-all duration-200"
             >
-              +84 347 101 143
+              {shopPhoneDisplay}
             </a>
           </div>
         </div>
@@ -75,10 +82,11 @@ const Hours = () => {
           <path d="M16.372 11.621c1.57 0 2.628 1.092 2.628 2.71C19 15.787 17.784 17 16.137 17C14.333 17 13 15.544 13 13.32c0-5.055 3.686-7.077 6-7.32v2.224c-1.569.283-3.333 1.86-3.412 3.6c.079-.04.392-.203.784-.203Zm-7.999 0c1.568 0 2.627 1.092 2.627 2.71C11 15.787 9.784 17 8.137 17C6.333 17 5 15.544 5 13.32C5 8.265 8.686 6.243 11 6v2.224c-1.569.283-3.333 1.86-3.412 3.6c.079-.04.392-.203.785-.203Z" />
         </svg>
         <h3 className="md:text-2xl text-xl font-semibold text-gray-200 leading-relaxed max-w-2xl">
-          “ Một mái tóc đẹp không chỉ là phong cách, mà còn là phong thái của bạn. ”
+          “ Một mái tóc đẹp không chỉ là phong cách, mà còn là phong thái của
+          bạn. ”
         </h3>
         <small className="mt-4 text-lg text-[var(--color-gold)] font-semibold">
-          - Ngo Dinh Nam -
+          - {shopOwner} -
         </small>
       </section>
     </div>

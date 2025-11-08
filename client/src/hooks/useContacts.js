@@ -20,7 +20,6 @@ export const useContacts = () => {
         setContacts([]);
       }
     } catch (err) {
-      console.error("Error fetching contacts:", err);
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||

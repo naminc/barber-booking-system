@@ -192,7 +192,7 @@ export default function Settings() {
             />
           </div>
 
-          {/* Tên website */}
+          {/* Slogan */}
           <div>
             <label
               htmlFor="slogan"
@@ -233,6 +233,27 @@ export default function Settings() {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="https://naminc.dev"
             />
+          </div>
+          {/* Iframe Google Map */}
+          <div>
+            <label
+              htmlFor="iframeGoogleMap"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              <div className="flex items-center">
+                <Link className="h-4 w-4 text-gray-400 mr-1" />
+                Iframe Google Map
+              </div>
+            </label>
+            <textarea
+              rows={3}
+              id="iframeGoogleMap"
+              name="iframeGoogleMap"
+              value={settings.iframeGoogleMap || ""}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
+              placeholder="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3643.0642405995764!2d106.7411711746981!3d10.842647089310137!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317527c64a18e851%3A0x80ec03330791ae1!2zUlBWViszR1EsIDMgxJAuIFPhu5EgMzAsIExpbmggxJDDtG5nLCBUaOG7pyDEkOG7qWMsIEjhu5MgQ2jDrSBNaW5oIDcwMDAwMCwgVmnhu4d0IE5hbQ!5e1!3m2!1svi!2s!4v1760080336180!5m2!1svi!2s"
+            ></textarea>
           </div>
         </form>
       </div>
@@ -321,6 +342,24 @@ export default function Settings() {
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
               placeholder="Ngo Dinh Nam"
+            />
+          </div>
+          {/* Developer */}
+          <div>
+            <label
+              htmlFor="developer"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Nhà phát triển
+            </label>
+            <input
+              type="text"
+              id="developer"
+              name="developer"
+              value={settings.developer || ""}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-300 focus:border-gray-300 focus:bg-white transition-colors"
+              placeholder="Nhà phát triển"
             />
           </div>
         </div>

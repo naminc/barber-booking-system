@@ -5,7 +5,7 @@ import { useSettingsContext } from "../context/SettingsContext";
 const Footer = () => {
   const { getSetting } = useSettingsContext();
 
-  const shopOwner = getSetting("owner");
+  const developer = getSetting("developer");
   const slogan = getSetting("slogan");
   const websiteName = getSetting("websiteName");
   return (
@@ -20,7 +20,7 @@ const Footer = () => {
         <p className="text-gray-300 text-sm">
           © {new Date().getFullYear()} {websiteName}
           {" . "}All rights reserved.
-          Developed by <a href={`https://naminc.dev`} target="_blank" rel="noopener noreferrer" className="text-[#c29e75] hover:text-[#e8c891] transition-all duration-300">@{shopOwner}</a>
+          Developed by <a href={`https://naminc.dev`} target="_blank" rel="noopener noreferrer" className="text-[#c29e75] hover:text-[#e8c891] transition-all duration-300">@{developer}</a>
         </p>
 
         <div className="flex gap-6 text-2xl justify-center">

@@ -24,7 +24,6 @@ export const useStaff = () => {
         setStaff([]);
       }
     } catch (err) {
-      console.error("Error fetching staff:", err);
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||
@@ -48,7 +47,7 @@ export const useStaff = () => {
         setStats({ total: 0, active: 0, inactive: 0 });
       }
     } catch (err) {
-      console.error("Error fetching staff stats:", err);
+      // Silent fail
     }
   }, []);
 

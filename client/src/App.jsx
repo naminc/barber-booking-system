@@ -21,7 +21,7 @@ import BookingConfirmation from "./pages/BookingConfirmation";
 import Review from "./pages/Review";
 import EditProfile from "./pages/EditProfile";
 import AdminLayout from "./layouts/AdminLayout";
-import Dashboard from "./pages/Admin/Dashboard";
+import Dashboard from "./pages/Admin/DashboardManagement/Dashboard";
 import Settings from "./pages/Admin/Settings";
 import Staff from "./pages/Admin/StaffManagement/Staff";
 import Appointments from "./pages/Admin/AppointmentManagement/Appointments";
@@ -41,6 +41,7 @@ import { SettingsProvider } from "./context/SettingsContext";
 import GuestRoute from "./routes/GuestRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Forbidden from "./pages/Forbidden";
+import { useTokenExpiration } from "./hooks/useTokenExpiration";
 
 function Home() {
   return (
@@ -62,6 +63,9 @@ function Home() {
 }
 
 export default function App() {
+  // Check token expiration every 30 seconds
+  useTokenExpiration(30000);
+
   return (
     <SettingsProvider>
       <BookingProvider>

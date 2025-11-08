@@ -12,3 +12,5 @@ export { useStaff } from "./useStaff";
 export { useContacts } from "./useContacts";
 export { useAppointments } from "./useAppointments";
 export { useReviews } from "./useReviews";
+export { useDashboard } from "./useDashboard";
+export { useTokenExpiration } from "./useTokenExpiration";

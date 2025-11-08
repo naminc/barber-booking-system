@@ -11,6 +11,7 @@ const serviceRoutes = require("./routes/serviceRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const app = express();
 
 // Middleware
@@ -36,5 +37,6 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 module.exports = app;

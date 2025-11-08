@@ -61,7 +61,6 @@ export default function EditStaff() {
           navigate("/admin/staff");
         }
       } catch (err) {
-        console.error("Error fetching staff:", err);
         toast.error("Không thể tải thông tin thợ");
         navigate("/admin/staff");
       } finally {
@@ -141,7 +140,6 @@ export default function EditStaff() {
       }, 1000);
     } catch (err) {
       toast.error(err.error || "Cập nhật thợ thất bại");
-      console.error("Error updating staff:", err);
     } finally {
       setSubmitting(false);
     }

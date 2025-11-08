@@ -1,8 +1,10 @@
 import React from "react";
 import others2Img from "../imgs/02.jpg";
 import others1Img from "../imgs/01.jpg";
-
+import { useSettingsContext } from "../context/SettingsContext";
 const About = () => {
+  const { getSetting } = useSettingsContext();
+  const shopOwner = getSetting("owner");
   return (
     <div id="about">
       <section className="flex items-center justify-center w-full my-20">
@@ -47,7 +49,7 @@ const About = () => {
           Hãy để chúng tôi giúp bạn thể hiện phong cách riêng. ”
         </h3>
         <small className="mt-4 text-2xl font-RobotoCondensed">
-          - Ngo Dinh Nam -
+          - {shopOwner} -
         </small>
       </section>
     </div>

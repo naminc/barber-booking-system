@@ -22,7 +22,6 @@ export const useServices = () => {
         setServices([]);
       }
     } catch (err) {
-      console.error("Error fetching services:", err);
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||

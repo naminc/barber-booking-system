@@ -23,7 +23,6 @@ export const useReviews = () => {
         setReviews([]);
       }
     } catch (err) {
-      console.error("Error fetching reviews:", err);
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||

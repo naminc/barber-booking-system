@@ -24,7 +24,6 @@ export const useAppointments = () => {
         return [];
       }
     } catch (err) {
-      console.error("Error fetching my appointments:", err);
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||
@@ -44,7 +43,6 @@ export const useAppointments = () => {
       const response = await appointmentsApi.createAppointment(data);
       return response;
     } catch (err) {
-      console.error("Error creating appointment:", err);
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||
@@ -74,7 +72,6 @@ export const useAppointments = () => {
         return [];
       }
     } catch (err) {
-      console.error("Error fetching all appointments:", err);
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||
@@ -161,7 +158,6 @@ export const useAppointments = () => {
       const response = await appointmentsApi.getAppointmentStats();
       return response;
     } catch (err) {
-      console.error("Error fetching appointment stats:", err);
       throw err;
     }
   }, []);
@@ -181,7 +177,6 @@ export const useAppointments = () => {
         return [];
       }
     } catch (err) {
-      console.error("Error fetching appointments by staff:", err);
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||
@@ -212,7 +207,6 @@ export const useAppointments = () => {
           return [];
         }
       } catch (err) {
-        console.error("Error fetching appointments by date range:", err);
         const errorMessage =
           err.response?.data?.error ||
           err.response?.data?.message ||
@@ -225,6 +219,28 @@ export const useAppointments = () => {
     },
     []
   );
+
+  // Hủy appointment (user)
+  const cancelAppointment = useCallback(async (id) => {
+    try {
+      const response = await appointmentsApi.cancelAppointment(id);
+
+      // Cập nhật state local
+      setAppointments((prevAppointments) =>
+        prevAppointments.map((appointment) =>
+          appointment.id === id ? { ...appointment, status: "cancelled" } : appointment
+        )
+      );
+
+      return response;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        "Hủy lịch hẹn thất bại";
+      throw { error: errorMessage };
+    }
+  }, []);
 
   return {
     appointments,
@@ -239,5 +255,6 @@ export const useAppointments = () => {
     fetchAppointmentStats,
     fetchAppointmentsByStaffId,
     fetchAppointmentsByDateRange,
+    cancelAppointment,
   };
 };

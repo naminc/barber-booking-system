@@ -17,7 +17,7 @@ const Appointment = {
       LEFT JOIN users u ON a.user_id = u.id
       LEFT JOIN services s ON a.service_id = s.id
       LEFT JOIN staff st ON a.staff_id = st.id
-      ORDER BY a.appointment_date DESC, a.created_at DESC
+      ORDER BY a.created_at DESC, a.appointment_date DESC
     `;
     const [rows] = await db.query(sql);
     return rows;
@@ -59,7 +59,13 @@ const Appointment = {
       LEFT JOIN services s ON a.service_id = s.id
       LEFT JOIN staff st ON a.staff_id = st.id
       WHERE a.user_id = ?
-      ORDER BY a.appointment_date DESC, a.created_at DESC
+      ORDER BY 
+        CASE 
+          WHEN a.appointment_date >= NOW() THEN 0 
+          ELSE 1 
+        END,
+        a.appointment_date ASC,
+        a.created_at DESC
     `;
     const [rows] = await db.query(sql, [userId]);
     return rows;
@@ -282,13 +288,6 @@ const Appointment = {
       // Check if time slots overlap
       // Overlap occurs if: newStart < existingEnd AND existingStart < newEnd
       if (appointmentTime < existingEnd && existingStart < newAppointmentEnd) {
-        console.log("Conflict detected:", {
-          newStart: appointmentTime.toISOString(),
-          newEnd: newAppointmentEnd.toISOString(),
-          existingStart: existingStart.toISOString(),
-          existingEnd: existingEnd.toISOString(),
-          staffId,
-        });
         return true; // Conflict found
       }
     }

@@ -317,6 +317,59 @@ exports.delete = async (req, res) => {
   }
 };
 
+// Cancel appointment (user)
+exports.cancel = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appointment = await appointmentService.getAppointmentById(id);
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Lịch hẹn không tồn tại" });
+    }
+
+    // Check if user is the owner
+    if (appointment.user_id !== req.user.id) {
+      return res
+        .status(403)
+        .json({ error: "Bạn không có quyền hủy lịch hẹn này" });
+    }
+
+    // Check if appointment can be cancelled
+    if (appointment.status === "cancelled") {
+      return res.status(400).json({ error: "Lịch hẹn này đã được hủy" });
+    }
+
+    if (appointment.status === "completed") {
+      return res.status(400).json({ error: "Không thể hủy lịch hẹn đã hoàn thành" });
+    }
+
+    // Check if appointment date has passed
+    const appointmentTime = new Date(appointment.appointment_date);
+    const now = new Date();
+    if (appointmentTime <= now) {
+      return res.status(400).json({ 
+        error: "Không thể hủy lịch hẹn đã qua thời gian" 
+      });
+    }
+
+    // Check if cancellation is at least 1 hour before appointment
+    const timeDiff = appointmentTime - now;
+    const oneHourInMs = 60 * 60 * 1000; // 1 hour in milliseconds
+    if (timeDiff < oneHourInMs) {
+      return res.status(400).json({ 
+        error: "Chỉ có thể hủy lịch hẹn trước 1 giờ" 
+      });
+    }
+
+    await appointmentService.updateAppointmentStatus(id, "cancelled");
+    res.json({ message: "Hủy lịch hẹn thành công" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: err.message || "Hủy lịch hẹn thất bại" });
+  }
+};
+
 // Get appointment statistics
 exports.getStats = async (req, res) => {
   try {

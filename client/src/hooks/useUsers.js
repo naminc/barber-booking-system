@@ -23,7 +23,6 @@ export const useUsers = () => {
         setUsers([]);
       }
     } catch (err) {
-      console.error("Error fetching users:", err);
       const errorMessage =
         err.response?.data?.error ||
         err.response?.data?.message ||

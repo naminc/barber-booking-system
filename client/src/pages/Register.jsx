@@ -9,16 +9,21 @@ import {
 } from "react-icons/fa";
 import { useForm, useAuth, useNotification } from "../hooks";
 import "../theme.css";
+import { useSettingsContext } from "../context/SettingsContext";
+import { formatPhoneForTel, formatPhoneForDisplay } from "../utils/phoneHelper";
 
 const Register = () => {
   const navigate = useNavigate();
-  
+  const { getSetting } = useSettingsContext();
+  const shopPhone = getSetting("phone");
+  const shopPhoneDisplay = formatPhoneForDisplay(shopPhone);
+  const shopPhoneTel = formatPhoneForTel(shopPhone);
   const { values: form, handleChange } = useForm({
     name: "",
     email: "",
     password: "",
   });
-  
+
   const { loading, register } = useAuth();
   const { error, showError, clearNotifications } = useNotification();
 
@@ -130,8 +135,8 @@ const Register = () => {
 
         <div className="mt-8 text-center text-sm border-t border-[rgba(194,158,117,0.2)] pt-4">
           <span>Hoặc đặt lịch nhanh: </span>
-          <a href="tel:+84347101143" className="barber-link font-semibold">
-            +84 347 101 143
+          <a href={`tel:${shopPhoneTel}`} className="barber-link font-semibold">
+            {shopPhoneDisplay}
           </a>
         </div>
       </div>

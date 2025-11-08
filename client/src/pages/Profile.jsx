@@ -6,6 +6,7 @@ import {
   FaCalendarAlt,
   FaCut,
   FaEdit,
+  FaTimes,
 } from "react-icons/fa";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
@@ -21,9 +22,10 @@ import "../theme.css";
 const Profile = () => {
   const navigate = useNavigate();
   const { userData, loading: userLoading, error: userError } = useUserProfile();
-  const { fetchMyAppointments } = useAppointments();
+  const { fetchMyAppointments, cancelAppointment } = useAppointments();
   const [bookings, setBookings] = useState([]);
   const [bookingsLoading, setBookingsLoading] = useState(true);
+  const [cancellingId, setCancellingId] = useState(null);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -42,12 +44,13 @@ const Profile = () => {
               service: appointment.service_name || "N/A",
               barber: appointment.staff_name || "N/A",
               status: getAppointmentStatusText(appointment.status),
+              rawStatus: appointment.status,
+              appointmentDate: appointment.appointment_date,
             };
           });
           setBookings(formattedBookings);
         }
       } catch (appointmentErr) {
-        console.error("Lỗi khi tải lịch hẹn:", appointmentErr);
         setBookings([]);
       } finally {
         setBookingsLoading(false);
@@ -56,6 +59,63 @@ const Profile = () => {
 
     fetchAppointments();
   }, [fetchMyAppointments]);
+
+  // Check if appointment can be cancelled
+  const canCancel = (booking) => {
+    if (booking.rawStatus === "cancelled" || booking.rawStatus === "completed") {
+      return false;
+    }
+    const appointmentTime = new Date(booking.appointmentDate);
+    const now = new Date();
+    
+    // Check if appointment has passed
+    if (appointmentTime <= now) {
+      return false;
+    }
+    
+    // Check if cancellation is at least 1 hour before appointment
+    const timeDiff = appointmentTime - now;
+    const oneHourInMs = 60 * 60 * 1000; // 1 hour in milliseconds
+    return timeDiff >= oneHourInMs;
+  };
+
+  // Handle cancel appointment
+  const handleCancel = async (bookingId) => {
+    if (!window.confirm("Bạn có chắc chắn muốn hủy lịch hẹn này?")) {
+      return;
+    }
+
+    try {
+      setCancellingId(bookingId);
+      await cancelAppointment(bookingId);
+      
+      // Refresh appointments
+      const appointmentsResponse = await fetchMyAppointments();
+      if (appointmentsResponse && Array.isArray(appointmentsResponse)) {
+        const formattedBookings = appointmentsResponse.map((appointment) => {
+          const { date, time } = parseAppointmentDate(
+            appointment.appointment_date
+          );
+          return {
+            id: appointment.id,
+            date,
+            time,
+            service: appointment.service_name || "N/A",
+            barber: appointment.staff_name || "N/A",
+            status: getAppointmentStatusText(appointment.status),
+            rawStatus: appointment.status,
+            appointmentDate: appointment.appointment_date,
+          };
+        });
+        setBookings(formattedBookings);
+      }
+      alert("Hủy lịch hẹn thành công");
+    } catch (err) {
+      alert(err.error || "Hủy lịch hẹn thất bại");
+    } finally {
+      setCancellingId(null);
+    }
+  };
 
   // Handle auth error
   useEffect(() => {
@@ -178,6 +238,9 @@ const Profile = () => {
                       <th className="px-4 py-3 border-b border-[var(--color-gold)]/30 text-left">
                         Trạng thái
                       </th>
+                      <th className="px-4 py-3 border-b border-[var(--color-gold)]/30 text-left">
+                        Thao tác
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -206,6 +269,20 @@ const Profile = () => {
                           )}`}
                         >
                           {b.status}
+                        </td>
+                        <td className="px-4 py-3 border-b border-[var(--color-gold)]/20">
+                          {canCancel(b) ? (
+                            <button
+                              onClick={() => handleCancel(b.id)}
+                              disabled={cancellingId === b.id}
+                              className="flex items-center gap-1 px-2 py-1 text-xs bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 hover:border-rose-500/50 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <FaTimes className="text-[10px]" />
+                              {cancellingId === b.id ? "Đang hủy..." : "Hủy"}
+                            </button>
+                          ) : (
+                            <span className="text-gray-500 text-sm">-</span>
+                          )}
                         </td>
                       </tr>
                     ))}

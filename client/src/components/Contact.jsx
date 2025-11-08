@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import { useSettingsContext } from "../context/SettingsContext";
 import contactsApi from "../api/contactsApi";
+import { formatPhoneForTel, formatPhoneForDisplay } from "../utils/phoneHelper";
 
 const Contact = () => {
   const { getSetting } = useSettingsContext();
   const shopEmail = getSetting("email");
   const shopPhone = getSetting("phone");
-
+  const shopPhoneDisplay = formatPhoneForDisplay(shopPhone);
+  const shopPhoneTel = formatPhoneForTel(shopPhone);
+  const iframeGoogleMap = getSetting("iframeGoogleMap");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -67,7 +70,7 @@ const Contact = () => {
       <div className="md:w-3/5 w-4/5 flex gap-10 lg:flex-row flex-col">
         <div className="lg:w-1/2 w-full rounded-2xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.4)] border border-[#c29e75]/30 aspect-[4/3]">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3643.0642405995764!2d106.7411711746981!3d10.842647089310137!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317527c64a18e851%3A0x80ec03330791ae1!2zUlBWViszR1EsIDMgxJAuIFPhu5EgMzAsIExpbmggxJDDtG5nLCBUaOG7pyDEkOG7qWMsIEjhu5MgQ2jDrSBNaW5oIDcwMDAwMCwgVmnhu4d0IE5hbQ!5e1!3m2!1svi!2s!4v1760080336180!5m2!1svi!2s"
+            src={iframeGoogleMap}
             className="w-full h-full border-0"
             allowFullScreen
             loading="lazy"
@@ -88,10 +91,10 @@ const Contact = () => {
               {shopEmail}
             </a>
             <a
-              href={`tel:${shopPhone}`}
+              href={`tel:${shopPhoneTel}`}
               className="hover:text-[#c29e75] transition-all duration-200"
             >
-              {shopPhone}
+              {shopPhoneDisplay}
             </a>
           </div>
 
