@@ -64,8 +64,10 @@ function Home() {
 }
 
 export default function App() {
-  // Kiểm tra thời gian hết hạn token mỗi 30 giây
-  useTokenExpiration(30000);
+  // Kiểm tra thời gian hết hạn token
+  // Hook sẽ tự động tính toán và đặt timeout chính xác khi token hết hạn
+  // Interval 5 giây chỉ để kiểm tra định kỳ (phòng trường hợp token bị thay đổi)
+  useTokenExpiration(5000);
 
   return (
     <SettingsProvider>

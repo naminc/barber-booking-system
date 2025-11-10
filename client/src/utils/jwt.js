@@ -19,7 +19,6 @@ export const decodeToken = (token) => {
   }
 };
 
-
 export const isTokenExpired = (token) => {
   if (!token) return true;
 
@@ -39,4 +38,17 @@ export const getTokenExpiration = (token) => {
   if (!decoded || !decoded.exp) return null;
 
   return new Date(decoded.exp * 1000);
+};
+
+// Tính thời gian còn lại của token (milliseconds)
+export const getTokenTimeRemaining = (token) => {
+  if (!token) return 0;
+
+  const decoded = decodeToken(token);
+  if (!decoded || !decoded.exp) return 0;
+
+  const currentTime = Date.now() / 1000;
+  const timeRemaining = (decoded.exp - currentTime) * 1000; // Chuyển sang milliseconds
+
+  return Math.max(0, timeRemaining);
 };
