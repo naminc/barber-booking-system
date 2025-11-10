@@ -1,8 +1,3 @@
-/**
- * Decode JWT token without verification (for client-side expiration check)
- * @param {string} token - JWT token
- * @returns {object|null} - Decoded token payload or null if invalid
- */
 export const decodeToken = (token) => {
   try {
     if (!token) return null;
@@ -24,30 +19,21 @@ export const decodeToken = (token) => {
   }
 };
 
-/**
- * Check if JWT token is expired
- * @param {string} token - JWT token
- * @returns {boolean} - True if token is expired or invalid
- */
+
 export const isTokenExpired = (token) => {
   if (!token) return true;
 
   const decoded = decodeToken(token);
   if (!decoded || !decoded.exp) return true;
 
-  // exp is in seconds, Date.now() is in milliseconds
+  // exp là thời gian hết hạn token, Date.now() là thời gian hiện tại
   const currentTime = Date.now() / 1000;
 
-  // Token is expired if exp is less than current time
-  // Add a small buffer (5 seconds) to account for clock skew
+  // Token hết hạn nếu exp nhỏ hơn thời gian hiện tại
+  // Thêm một khoảng thời gian nhỏ (5 giây) để tính đến sự khác biệt của đồng hồ
   return decoded.exp < currentTime - 5;
 };
 
-/**
- * Get token expiration time
- * @param {string} token - JWT token
- * @returns {Date|null} - Expiration date or null if invalid
- */
 export const getTokenExpiration = (token) => {
   const decoded = decodeToken(token);
   if (!decoded || !decoded.exp) return null;

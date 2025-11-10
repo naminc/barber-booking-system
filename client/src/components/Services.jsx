@@ -12,7 +12,6 @@ const Services = () => {
   const navigate = useNavigate();
   const { services, loading } = useServices();
 
-  // Default images
   const defaultImages = [scissors, blade, hairDrayer, bottle, beard];
 
   const getImageUrl = (imagePath) => {

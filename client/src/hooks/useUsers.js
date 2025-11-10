@@ -12,7 +12,7 @@ export const useUsers = () => {
       setError(null);
       const response = await usersApi.getAllUsers();
       
-      // Handle different response formats
+      // Xử lý các định dạng phản hồi khác nhau
       if (Array.isArray(response)) {
         setUsers(response);
       } else if (response.data && Array.isArray(response.data)) {
@@ -33,6 +33,7 @@ export const useUsers = () => {
     }
   }, []);
 
+  // Xóa người dùng
   const deleteUser = useCallback(async (userId) => {
     try {
       await usersApi.deleteUser(userId);
@@ -47,11 +48,12 @@ export const useUsers = () => {
     }
   }, []);
 
+  // Cập nhật người dùng
   const updateUser = useCallback(async (userId, data) => {
     try {
       const response = await usersApi.updateUser(userId, data);
       
-      // Update local state
+      // Cập nhật state local
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.id === userId ? { ...user, ...response.user } : user
@@ -68,12 +70,13 @@ export const useUsers = () => {
     }
   }, []);
 
+  // Thay đổi trạng thái người dùng
   const toggleUserStatus = useCallback(async (userId, currentStatus) => {
     try {
       const newStatus = currentStatus === "active" ? "inactive" : "active";
       const response = await usersApi.updateUser(userId, { status: newStatus });
       
-      // Update local state
+      // Cập nhật state local
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.id === userId ? { ...user, status: newStatus } : user
@@ -94,11 +97,12 @@ export const useUsers = () => {
     }
   }, []);
 
+  // Tạo người dùng
   const createUser = useCallback(async (data) => {
     try {
       const response = await usersApi.createUser(data);
       
-      // Add new user to local state
+      // Thêm người dùng mới vào state local
       if (response.user) {
         setUsers((prevUsers) => [...prevUsers, response.user]);
       }
@@ -113,12 +117,13 @@ export const useUsers = () => {
     }
   }, []);
 
-  // Filter functions
+  // Hàm lọc người dùng theo vai trò
   const filterByRole = useCallback((role) => {
     if (role === "all") return users;
     return users.filter((user) => user.role === role);
   }, [users]);
 
+  // Hàm tìm kiếm người dùng
   const searchUsers = useCallback((searchTerm) => {
     if (!searchTerm) return users;
     const term = searchTerm.toLowerCase();
@@ -130,11 +135,12 @@ export const useUsers = () => {
     );
   }, [users]);
 
-  // Load users on mount
+  // Sử dụng useEffect để lấy dữ liệu
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
+  // Giá trị của hook
   return {
     users,
     loading,

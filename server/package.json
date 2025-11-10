@@ -19,7 +19,8 @@
     "joi": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "mysql2": "^3.15.1"
+    "mysql2": "^3.15.1",
+    "nodemailer": "^6.9.8"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

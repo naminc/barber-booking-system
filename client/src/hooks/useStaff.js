@@ -1,19 +1,21 @@
 import { useState, useEffect, useCallback } from "react";
 import staffApi from "../api/staffApi";
 
+// Hook để sử dụng staff
 export const useStaff = () => {
   const [staff, setStaff] = useState([]);
   const [stats, setStats] = useState({ total: 0, active: 0, inactive: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Lấy danh sách staff
   const fetchStaff = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await staffApi.getAllStaff();
       
-      // Handle different response formats
+      // Xử lý các định dạng phản hồi khác nhau
       if (Array.isArray(response)) {
         setStaff(response);
       } else if (response.data && Array.isArray(response.data)) {
@@ -34,11 +36,12 @@ export const useStaff = () => {
     }
   }, []);
 
+  // Lấy thống kê staff
   const fetchStaffStats = useCallback(async () => {
     try {
       const response = await staffApi.getStaffStats();
       
-      // Handle different response formats
+      // Xử lý các định dạng phản hồi khác nhau
       if (response && typeof response === 'object' && 'total' in response) {
         setStats(response);
       } else if (response.data && typeof response.data === 'object') {
@@ -51,6 +54,7 @@ export const useStaff = () => {
     }
   }, []);
 
+  // Tạo staff mới
   const createStaff = async (data) => {
     try {
       const response = await staffApi.createStaff(data);
@@ -62,6 +66,7 @@ export const useStaff = () => {
     }
   };
 
+  // Cập nhật staff
   const updateStaff = async (id, data) => {
     try {
       const response = await staffApi.updateStaff(id, data);
@@ -73,6 +78,7 @@ export const useStaff = () => {
     }
   };
 
+  // Xóa staff
   const deleteStaff = async (id) => {
     try {
       const response = await staffApi.deleteStaff(id);
@@ -84,6 +90,7 @@ export const useStaff = () => {
     }
   };
 
+  // Thay đổi trạng thái staff
   const toggleStaffStatus = async (id, currentStatus) => {
     const newStatus = currentStatus === "active" ? "inactive" : "active";
     try {
@@ -108,11 +115,13 @@ export const useStaff = () => {
     }
   };
 
+  // Sử dụng useEffect để lấy dữ liệu
   useEffect(() => {
     fetchStaff();
     fetchStaffStats();
   }, [fetchStaff, fetchStaffStats]);
 
+  // Giá trị của hook
   return {
     staff,
     stats,

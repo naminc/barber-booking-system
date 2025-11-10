@@ -107,3 +107,23 @@ exports.updateUserSchema = Joi.object({
     "any.only": "Trạng thái không hợp lệ",
   }),
 });
+
+exports.forgotPasswordSchema = Joi.object({
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .required()
+    .messages({
+      "string.email": "Trường email không hợp lệ",
+      "any.required": "Trường email không được để trống",
+    }),
+});
+
+exports.resetPasswordSchema = Joi.object({
+  token: Joi.string().required().messages({
+    "any.required": "Token không được để trống",
+  }),
+  password: Joi.string().min(6).required().messages({
+    "string.min": "Trường mật khẩu phải có ít nhất 6 ký tự",
+    "any.required": "Mật khẩu không được để trống",
+  }),
+});

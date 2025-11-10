@@ -1,5 +1,5 @@
 import React from "react";
-import "../theme.css"; // để kế thừa màu vàng ánh kim
+import "../theme.css";
 import { useSettingsContext } from "../context/SettingsContext";
 import { formatPhoneForTel, formatPhoneForDisplay } from "../utils/phoneHelper";
 const Hours = () => {

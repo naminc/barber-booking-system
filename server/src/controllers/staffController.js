@@ -61,20 +61,20 @@ exports.update = async (req, res) => {
     const { id } = req.params;
     const { name, specialization, phone, experience, image, status } = req.body;
 
-    // Check if staff exists
+    // Kiểm tra nếu thợ tồn tại
     const existingStaff = await staffService.getStaffById(id);
     if (!existingStaff) {
       return res.status(404).json({ error: "Thợ không tồn tại" });
     }
 
-    // Support both file upload and image URL from body
+    // Xử lý cả file upload và URL ảnh từ body
     let imageUrl;
     if (req.file) {
       imageUrl = `/uploads/${req.file.filename}`;
     } else if (image !== undefined) {
-      imageUrl = image; // Use provided URL (could be empty string to remove image)
+      imageUrl = image; // Sử dụng URL được cung cấp (có thể là chuỗi rỗng để xóa ảnh)
     } else {
-      imageUrl = existingStaff.image; // Keep existing
+      imageUrl = existingStaff.image; // Giữ nguyên ảnh hiện tại
     }
 
     if (!name || !specialization || !phone)
@@ -101,7 +101,7 @@ exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Check if staff exists
+    // Kiểm tra nếu thợ tồn tại
     const existingStaff = await staffService.getStaffById(id);
     if (!existingStaff) {
       return res.status(404).json({ error: "Thợ không tồn tại" });

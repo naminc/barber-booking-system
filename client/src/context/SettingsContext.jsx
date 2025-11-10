@@ -3,11 +3,13 @@ import settingsApi from "../api/settingsApi";
 
 const SettingsContext = createContext();
 
+// Provider cho context settings
 export function SettingsProvider({ children }) {
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Lấy cấu hình
   const fetchSettings = async () => {
     try {
       setLoading(true);
@@ -22,6 +24,7 @@ export function SettingsProvider({ children }) {
     }
   };
 
+  // Cập nhật cấu hình
   const updateSettings = async (newSettings) => {
     try {
       const updated = await settingsApi.updateSettings(newSettings);
@@ -32,6 +35,7 @@ export function SettingsProvider({ children }) {
     }
   };
 
+  // Lấy giá trị của cấu hình
   const getSetting = (key, defaultValue = null) => {
     return settings?.[key] ?? defaultValue;
   };
@@ -40,6 +44,7 @@ export function SettingsProvider({ children }) {
     fetchSettings();
   }, []);
 
+  // Giá trị của context
   const value = {
     settings,
     loading,
@@ -56,6 +61,7 @@ export function SettingsProvider({ children }) {
   );
 }
 
+// Hook để sử dụng context
 export function useSettingsContext() {
   const context = useContext(SettingsContext);
   if (!context) {

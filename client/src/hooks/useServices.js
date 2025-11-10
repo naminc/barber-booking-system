@@ -6,12 +6,14 @@ export const useServices = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Lấy danh sách dịch vụ từ API
   const fetchServices = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await servicesApi.getAllServices();
       
+      // Xử lý các định dạng phản hồi khác nhau
       if (Array.isArray(response)) {
         setServices(response);
       } else if (response.data && Array.isArray(response.data)) {
@@ -32,6 +34,7 @@ export const useServices = () => {
     }
   }, []);
 
+  // Xóa dịch vụ
   const deleteService = useCallback(async (serviceId) => {
     try {
       await servicesApi.deleteService(serviceId);
@@ -48,6 +51,7 @@ export const useServices = () => {
     }
   }, []);
 
+  // Cập nhật dịch vụ
   const updateService = useCallback(async (serviceId, data) => {
     try {
       const response = await servicesApi.updateService(serviceId, data);
@@ -68,6 +72,7 @@ export const useServices = () => {
     }
   }, []);
 
+  // Thay đổi trạng thái dịch vụ
   const toggleServiceStatus = useCallback(async (serviceId, currentStatus) => {
     try {
       const newStatus = currentStatus === "active" ? "inactive" : "active";
@@ -93,6 +98,7 @@ export const useServices = () => {
     }
   }, []);
 
+  // Tạo dịch vụ
   const createService = useCallback(async (data) => {
     try {
       const response = await servicesApi.createService(data);
@@ -110,11 +116,13 @@ export const useServices = () => {
     }
   }, []);
 
+  // Hàm lọc dịch vụ theo trạng thái
   const filterByStatus = useCallback((status) => {
     if (status === "all") return services;
     return services.filter((service) => service.status === status);
   }, [services]);
 
+  // Hàm tìm kiếm dịch vụ
   const searchServices = useCallback((searchTerm) => {
     if (!searchTerm) return services;
     const term = searchTerm.toLowerCase();
@@ -125,10 +133,12 @@ export const useServices = () => {
     );
   }, [services]);
 
+  // Sử dụng useEffect để lấy dữ liệu
   useEffect(() => {
     fetchServices();
   }, [fetchServices]);
 
+  // Giá trị của hook
   return {
     services,
     loading,

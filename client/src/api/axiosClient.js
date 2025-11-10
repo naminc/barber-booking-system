@@ -12,19 +12,19 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   
-  // Check if token is expired before making request
+  // Kiểm tra token có hết hạn không
   if (token && isTokenExpired(token)) {
-    // Token expired, clear and logout
+    // Token hết hạn, xóa và đăng xuất
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    // Redirect to login if not already there
+    // Chuyển hướng đến trang đăng nhập nếu không phải trang đăng nhập
     if (window.location.pathname !== "/login") {
       window.location.href = "/login";
     }
-    return Promise.reject(new Error("Token expired"));
+    return Promise.reject(new Error("Token hết hạn"));
   }
   
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (token) config.headers.Authorization = `Bearer ${token}`; // Gắn token vào header của request
   return config;
 });
 
@@ -32,33 +32,33 @@ axiosClient.interceptors.request.use((config) => {
 axiosClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    // Handle 401/403 (Unauthorized/Forbidden) - token expired or invalid
+    // Xử lý lỗi 401/403 (Unauthorized/Forbidden) - token hết hạn hoặc không hợp lệ
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       const errorMessage = error.response.data?.error || error.response.data?.message;
       
-      // Check if it's a token expiration error
+      // Kiểm tra nếu lỗi là do token hết hạn
       if (
         errorMessage?.toLowerCase().includes("expired") ||
         errorMessage?.toLowerCase().includes("invalid") ||
         errorMessage?.toLowerCase().includes("token")
       ) {
-        // Clear token and user data
+        // Xóa token và dữ liệu người dùng
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         
-        // Redirect to login if not already there
+        // Chuyển hướng đến trang đăng nhập nếu không phải trang đăng nhập
         if (window.location.pathname !== "/login") {
           window.location.href = "/login";
         }
       }
     }
 
-    // If we have a response from server, reject with the error structure
+    // Nếu có phản hồi từ server, từ chối với cấu trúc lỗi
     if (error.response) {
       return Promise.reject(error);
     }
 
-    // For network errors or other errors without response
+    // Đối với lỗi mạng hoặc lỗi khác không có phản hồi
     return Promise.reject(error);
   }
 );

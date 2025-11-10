@@ -1,62 +1,62 @@
 import axiosClient from "./axiosClient";
 
 const dashboardApi = {
-  // Get dashboard statistics
+  // Lấy thống kê dashboard
   getStats: async () => {
     try {
       const response = await axiosClient.get("/dashboard/stats");
-      // axiosClient interceptor already returns response.data, so response is already the data
+      // axiosClient interceptor đã trả về response.data, nên response đã là dữ liệu
       return response;
     } catch (error) {
       throw error;
     }
   },
 
-  // Get recent appointments
+  // Lấy lịch hẹn gần nhất
   getRecentAppointments: async (limit = 10) => {
     try {
       const response = await axiosClient.get(
         `/dashboard/recent-appointments?limit=${limit}`
       );
-      // axiosClient interceptor already returns response.data
+      // axiosClient interceptor đã trả về response.data
       return response;
     } catch (error) {
       throw error;
     }
   },
 
-  // Get revenue by month
+  // Lấy doanh thu theo tháng
   getRevenueByMonth: async (year) => {
     try {
       const url = year
         ? `/dashboard/revenue-by-month?year=${year}`
         : "/dashboard/revenue-by-month";
       const response = await axiosClient.get(url);
-      // axiosClient interceptor already returns response.data
+      // axiosClient interceptor đã trả về response.data
       return response;
     } catch (error) {
       throw error;
     }
   },
 
-  // Get today's statistics
+  // Lấy thống kê hôm nay
   getTodayStats: async () => {
     try {
       const response = await axiosClient.get("/dashboard/today");
-      // axiosClient interceptor already returns response.data
+      // axiosClient interceptor đã trả về response.data
       return response;
     } catch (error) {
       throw error;
     }
   },
 
-  // Get upcoming appointments
+  // Lấy lịch hẹn sắp tới
   getUpcomingAppointments: async (limit = 10) => {
     try {
       const response = await axiosClient.get(
         `/dashboard/upcoming-appointments?limit=${limit}`
       );
-      // axiosClient interceptor already returns response.data
+      // axiosClient interceptor đã trả về response.data
       return response;
     } catch (error) {
       throw error;

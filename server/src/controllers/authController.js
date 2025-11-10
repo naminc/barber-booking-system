@@ -44,3 +44,31 @@ exports.login = async (req, res) => {
     });
   }
 };
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const result = await authService.forgotPassword(email);
+    res.json(result);
+  } catch (err) {
+    const statusCode = err.statusCode || 500;
+    res.status(statusCode).json({
+      error: err.message || "Không thể xử lý yêu cầu",
+      details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    const result = await authService.resetPassword(token, password);
+    res.json(result);
+  } catch (err) {
+    const statusCode = err.statusCode || 400;
+    res.status(statusCode).json({
+      error: err.message || "Đặt lại mật khẩu thất bại",
+      details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+  }
+};

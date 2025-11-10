@@ -12,70 +12,20 @@ const {
   updateStatusSchema,
 } = require("../validations/appointmentValidation");
 
-router.get(
-  "/my-appointments",
-  verifyToken,
-  appointmentController.getMyAppointments
-);
-router.post(
-  "/create",
-  verifyToken,
-  validate(createAppointmentSchema, "body"),
-  appointmentController.create
-);
-router.put(
-  "/:id",
-  verifyToken,
-  validate(updateAppointmentSchema, "body"),
-  appointmentController.update
-);
+router.get("/my-appointments", verifyToken, appointmentController.getMyAppointments);
+router.post("/create", verifyToken, validate(createAppointmentSchema, "body"), appointmentController.create);
+router.put("/:id", verifyToken, validate(updateAppointmentSchema, "body"), appointmentController.update);
 router.delete("/:id", verifyToken, appointmentController.delete);
 router.post("/:id/cancel", verifyToken, appointmentController.cancel);
 
 // Admin routes
-router.get(
-  "/",
-  verifyToken,
-  authorizeRoles("admin"),
-  appointmentController.getAll
-);
-router.get(
-  "/stats",
-  verifyToken,
-  authorizeRoles("admin"),
-  appointmentController.getStats
-);
-router.get(
-  "/status/:status",
-  verifyToken,
-  authorizeRoles("admin"),
-  appointmentController.getByStatus
-);
-router.get(
-  "/staff/:staffId",
-  verifyToken,
-  authorizeRoles("admin"),
-  appointmentController.getByStaffId
-);
-router.get(
-  "/user/:userId",
-  verifyToken,
-  authorizeRoles("admin"),
-  appointmentController.getByUserId
-);
-router.get(
-  "/date-range",
-  verifyToken,
-  authorizeRoles("admin"),
-  appointmentController.getByDateRange
-);
+router.get("/", verifyToken, authorizeRoles("admin"), appointmentController.getAll);
+router.get("/stats", verifyToken, authorizeRoles("admin"), appointmentController.getStats);
+router.get("/status/:status", verifyToken, authorizeRoles("admin"), appointmentController.getByStatus);
+router.get("/staff/:staffId", verifyToken, authorizeRoles("admin"), appointmentController.getByStaffId);
+router.get("/user/:userId", verifyToken, authorizeRoles("admin"), appointmentController.getByUserId);
+router.get("/date-range", verifyToken, authorizeRoles("admin"), appointmentController.getByDateRange);
 router.get("/:id", verifyToken, appointmentController.getById);
-router.patch(
-  "/:id/status",
-  verifyToken,
-  authorizeRoles("admin"),
-  validate(updateStatusSchema, "body"),
-  appointmentController.updateStatus
-);
+router.patch("/:id/status", verifyToken, authorizeRoles("admin"), validate(updateStatusSchema, "body"), appointmentController.updateStatus);
 
 module.exports = router;

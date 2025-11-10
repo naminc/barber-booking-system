@@ -1,20 +1,12 @@
 import { useEffect } from "react";
 import { useSettingsContext } from "../context/SettingsContext";
 
-/**
- * Custom hook để set document title
- * @param {string} pageTitle - Tiêu đề trang (VD: "Đặt lịch", "Dịch vụ")
- * @param {boolean} includeShopName - Có thêm tên shop vào title không
- * 
- * @example
- * usePageTitle("Đặt lịch"); // → "Đặt lịch - NAMINC BARBER"
- * usePageTitle("Trang chủ", false); // → "Trang chủ"
- */
+// Hook để set document title
 export function usePageTitle(pageTitle, includeShopName = true) {
   const { getSetting } = useSettingsContext();
 
   useEffect(() => {
-    // Lấy title từ settings (field "title" trong database)
+    // Lấy title từ settings
     const shopTitle = getSetting("title", "NAMINC BARBER");
     
     if (includeShopName && pageTitle) {
@@ -25,7 +17,7 @@ export function usePageTitle(pageTitle, includeShopName = true) {
       document.title = shopTitle;
     }
 
-    // Cleanup: Restore default title when component unmounts
+    // Cleanup: Khôi phục title mặc định khi component unmount
     return () => {
       document.title = shopTitle;
     };

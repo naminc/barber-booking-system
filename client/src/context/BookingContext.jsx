@@ -10,6 +10,7 @@ export const useBookingContext = () => {
   return context;
 };
 
+// Provider cho context booking
 export const BookingProvider = ({ children }) => {
   const [bookingData, setBookingData] = useState({
     service: '',
@@ -26,6 +27,7 @@ export const BookingProvider = ({ children }) => {
     }
   });
 
+  // Cập nhật dữ liệu booking
   const updateBookingData = (updates) => {
     setBookingData(prevData => ({
       ...prevData,
@@ -33,6 +35,7 @@ export const BookingProvider = ({ children }) => {
     }));
   };
 
+  // Reset dữ liệu booking
   const resetBookingData = () => {
     setBookingData({
       service: '',
@@ -50,6 +53,7 @@ export const BookingProvider = ({ children }) => {
     });
   };
 
+  // Giá trị của context
   const value = {
     bookingData,
     updateBookingData,

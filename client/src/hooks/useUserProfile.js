@@ -7,6 +7,7 @@ export const useUserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Lấy thông tin người dùng
   const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
@@ -41,10 +42,12 @@ export const useUserProfile = () => {
     }
   }, []);
 
+  // Sử dụng useEffect để lấy dữ liệu
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
 
+  // Giá trị của hook
   return {
     userId,
     userData,

@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import appointmentsApi from "../api/appointmentsApi";
 
+// Hook để sử dụng appointments
 export const useAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);

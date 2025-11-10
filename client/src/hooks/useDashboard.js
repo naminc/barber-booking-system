@@ -15,7 +15,7 @@ export const useDashboard = () => {
       setLoading(true);
       setError(null);
 
-      // Fetch all dashboard data in parallel
+      // Lấy dữ liệu dashboard
       const [statsData, recentData, upcomingData, revenueData, todayData] = await Promise.all(
         [
           dashboardApi.getStats(),
@@ -38,6 +38,7 @@ export const useDashboard = () => {
     }
   };
 
+  // Lấy dữ liệu dashboard
   const refreshStats = async () => {
     try {
       const statsData = await dashboardApi.getStats();
@@ -47,6 +48,7 @@ export const useDashboard = () => {
     }
   };
 
+  // Lấy dữ liệu dashboard
   const refreshRecentAppointments = async () => {
     try {
       const recentData = await dashboardApi.getRecentAppointments(4);
@@ -56,6 +58,7 @@ export const useDashboard = () => {
     }
   };
 
+  // Lấy dữ liệu dashboard
   const refreshTodayStats = async () => {
     try {
       const todayData = await dashboardApi.getTodayStats();
@@ -69,6 +72,7 @@ export const useDashboard = () => {
     fetchDashboardData();
   }, []);
 
+  // Lấy dữ liệu dashboard
   const refreshUpcomingAppointments = async () => {
     try {
       const upcomingData = await dashboardApi.getUpcomingAppointments(4);
@@ -78,6 +82,7 @@ export const useDashboard = () => {
     }
   };
 
+  // Giá trị của hook
   return {
     stats,
     recentAppointments,

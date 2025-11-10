@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaEnvelope, FaArrowLeft, FaPaperPlane } from "react-icons/fa";
+import authApi from "../api/authApi";
 import "../theme.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSent(false);
 
     if (!email) {
       setError("Vui lòng nhập email của bạn.");
@@ -18,10 +21,14 @@ const ForgotPassword = () => {
     }
 
     try {
-      await new Promise((r) => setTimeout(r, 800));
+      setLoading(true);
+      await authApi.forgotPassword(email);
       setSent(true);
-    } catch {
-      setError("Gửi yêu cầu thất bại. Vui lòng thử lại.");
+    } catch (err) {
+      const errorMsg = err.response?.data?.error || err.message || "Gửi yêu cầu thất bại. Vui lòng thử lại.";
+      setError(errorMsg);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -85,10 +92,11 @@ const ForgotPassword = () => {
 
             <button
               type="submit"
-              className="barber-btn w-full flex items-center justify-center gap-2"
+              disabled={loading}
+              className="barber-btn w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <FaPaperPlane className="text-base" />
-              Gửi liên kết đặt lại
+              {loading ? "Đang gửi..." : "Gửi liên kết đặt lại"}
             </button>
 
             <p className="text-center text-sm mt-4">

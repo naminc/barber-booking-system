@@ -12,7 +12,7 @@ export const useReviews = () => {
       setError(null);
       const response = await reviewsApi.getAllReviews();
 
-      // Handle different response formats
+      // Xử lý các định dạng phản hồi khác nhau
       if (Array.isArray(response)) {
         setReviews(response);
       } else if (response.data && Array.isArray(response.data)) {
@@ -33,6 +33,7 @@ export const useReviews = () => {
     }
   }, []);
 
+  // Xóa đánh giá
   const deleteReview = useCallback(async (reviewId) => {
     try {
       await reviewsApi.deleteReview(reviewId);
@@ -49,11 +50,12 @@ export const useReviews = () => {
     }
   }, []);
 
+  // Cập nhật đánh giá
   const updateReview = useCallback(async (reviewId, data) => {
     try {
       const response = await reviewsApi.updateReview(reviewId, data);
 
-      // Update local state
+      // Cập nhật state local
       setReviews((prevReviews) =>
         prevReviews.map((review) =>
           review.id === reviewId ? { ...review, ...response.review } : review
@@ -70,6 +72,7 @@ export const useReviews = () => {
     }
   }, []);
 
+  // Thay đổi trạng thái đánh giá
   const updateReviewStatus = useCallback(async (reviewId, currentStatus) => {
     try {
       const newStatus =
@@ -80,7 +83,7 @@ export const useReviews = () => {
           : "approved";
       const response = await reviewsApi.updateReviewStatus(reviewId, newStatus);
 
-      // Update local state
+      // Cập nhật state local
       setReviews((prevReviews) =>
         prevReviews.map((review) =>
           review.id === reviewId ? { ...review, status: newStatus } : review
@@ -104,11 +107,12 @@ export const useReviews = () => {
     }
   }, []);
 
+  // Tạo đánh giá
   const createReview = useCallback(async (data) => {
     try {
       const response = await reviewsApi.createReview(data);
 
-      // Add new review to local state
+      // Thêm đánh giá mới vào state local
       if (response.review) {
         setReviews((prevReviews) => [response.review, ...prevReviews]);
       }
@@ -123,7 +127,7 @@ export const useReviews = () => {
     }
   }, []);
 
-  // Filter functions
+  // Hàm lọc đánh giá
   const filterByStatus = useCallback(
     (status) => {
       if (status === "all") return reviews;
@@ -132,6 +136,7 @@ export const useReviews = () => {
     [reviews]
   );
 
+  // Hàm lọc đánh giá theo đánh giá
   const filterByRating = useCallback(
     (rating) => {
       if (rating === "all") return reviews;
@@ -140,6 +145,7 @@ export const useReviews = () => {
     [reviews]
   );
 
+  // Hàm tìm kiếm đánh giá
   const searchReviews = useCallback(
     (searchTerm) => {
       if (!searchTerm) return reviews;
@@ -155,7 +161,7 @@ export const useReviews = () => {
     [reviews]
   );
 
-  // Load reviews on mount
+  // Sử dụng useEffect để lấy dữ liệu
   useEffect(() => {
     fetchReviews();
   }, [fetchReviews]);

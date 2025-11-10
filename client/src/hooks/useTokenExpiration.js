@@ -11,27 +11,28 @@ export const useTokenExpiration = (checkInterval = 30000) => {
       const token = localStorage.getItem("token");
       
       if (token && isTokenExpired(token)) {
-        // Token expired, clear and logout
+        // Xóa token và user khỏi localStorage
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         
-        // Only redirect if not already on login page
+        // Chỉ redirect nếu không đang ở trang login
         if (window.location.pathname !== "/login") {
           navigate("/login", { replace: true });
         }
       }
     };
 
-    // Check immediately
+    // Kiểm tra ngay lập tức
     checkTokenExpiration();
 
-    // Set up interval to check periodically
+    // Thiết lập interval để kiểm tra định kỳ
     const interval = setInterval(checkTokenExpiration, checkInterval);
 
-    // Cleanup interval on unmount
+    // Cleanup interval khi unmount
     return () => clearInterval(interval);
   }, [navigate, checkInterval]);
 };
 
+// Giá trị của hook
 export default useTokenExpiration;
 

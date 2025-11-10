@@ -1,7 +1,7 @@
 const db = require("../config/db");
 
 const Appointment = {
-  // Get all appointments
+  // Lấy tất cả lịch hẹn
   async getAll() {
     const sql = `
       SELECT 
@@ -23,7 +23,7 @@ const Appointment = {
     return rows;
   },
 
-  // Get appointment by ID
+  // Lấy lịch hẹn theo ID
   async getById(id) {
     const sql = `
       SELECT 
@@ -45,7 +45,7 @@ const Appointment = {
     return rows[0];
   },
 
-  // Get appointments by user ID
+  // Lấy lịch hẹn theo ID người dùng
   async getByUserId(userId) {
     const sql = `
       SELECT 
@@ -71,7 +71,7 @@ const Appointment = {
     return rows;
   },
 
-  // Create appointment
+  // Tạo lịch hẹn
   async create(data) {
     const sql = `
       INSERT INTO appointments 
@@ -91,7 +91,7 @@ const Appointment = {
     return { id: result.insertId, ...data };
   },
 
-  // Update appointment
+  // Cập nhật lịch hẹn
   async update(id, data) {
     const fields = [];
     const values = [];
@@ -135,28 +135,28 @@ const Appointment = {
     return result.affectedRows;
   },
 
-  // Update appointment status
+  // Cập nhật trạng thái lịch hẹn
   async updateStatus(id, status) {
     const sql = "UPDATE appointments SET status = ? WHERE id = ?";
     const [result] = await db.query(sql, [status, id]);
     return result.affectedRows;
   },
 
-  // Delete appointment
+  // Xóa lịch hẹn
   async delete(id) {
     const sql = "DELETE FROM appointments WHERE id = ?";
     const [result] = await db.query(sql, [id]);
     return result.affectedRows;
   },
 
-  // Get appointment count
+  // Lấy số lượng lịch hẹn
   async getAppointmentCount() {
     const sql = "SELECT COUNT(*) as total FROM appointments";
     const [rows] = await db.query(sql);
     return rows[0].total;
   },
 
-  // Get appointments by status
+  // Lấy lịch hẹn theo trạng thái
   async getByStatus(status) {
     const sql = `
       SELECT 
@@ -177,7 +177,7 @@ const Appointment = {
     return rows;
   },
 
-  // Get appointments by date range
+  // Lấy lịch hẹn theo khoảng thời gian
   async getByDateRange(startDate, endDate) {
     const sql = `
       SELECT 
@@ -196,7 +196,7 @@ const Appointment = {
     return rows;
   },
 
-  // Get appointments by staff
+  // Lấy lịch hẹn theo ID thợ barber
   async getByStaffId(staffId) {
     const sql = `
       SELECT 
@@ -213,25 +213,25 @@ const Appointment = {
     return rows;
   },
 
-  // Check if time slot is available (no conflict)
+  // Kiểm tra nếu thời gian lịch hẹn có thể được sử dụng (không trùng lặp)
   async checkTimeConflict(
     staffId,
     appointmentDate,
     serviceId,
     excludeId = null
   ) {
-    // Get duration of the new appointment's service
+    // Lấy thời gian của dịch vụ mới lịch hẹn
     const [newServiceRows] = await db.query(
       "SELECT duration FROM services WHERE id = ?",
       [serviceId]
     );
-    const newServiceDuration = newServiceRows[0]?.duration || 60; // Default 60 minutes
+    const newServiceDuration = newServiceRows[0]?.duration || 60; // Mặc định 60 phút
 
-    // Parse appointment date - handle both formats
-    // Timezone +07:00 (Vietnam) để đảm bảo đúng múi giờ
+    // Xử lý ngày lịch hẹn - xử lý cả định dạng ISO và MySQL datetime
+    // Múi giờ +07:00 (Việt Nam) để đảm bảo đúng múi giờ
     let appointmentTime;
     if (typeof appointmentDate === "string" && appointmentDate.includes(" ")) {
-      // Format: "YYYY-MM-DD HH:mm:ss"
+      // Định dạng: "YYYY-MM-DD HH:mm:ss"
       const [datePart, timePart] = appointmentDate.split(" ");
       appointmentTime = new Date(`${datePart}T${timePart}+07:00`);
     } else {
@@ -242,7 +242,7 @@ const Appointment = {
       appointmentTime.getTime() + newServiceDuration * 60 * 1000
     );
 
-    // Get all active appointments for this staff on the same day
+    // Lấy tất cả lịch hẹn hoạt động cho thợ barber trong cùng ngày
     let sql = `
       SELECT 
         a.id, 
@@ -257,7 +257,7 @@ const Appointment = {
     `;
     const params = [staffId, appointmentDate];
 
-    // Exclude current appointment when updating
+    // Loại trừ lịch hẹn hiện tại khi cập nhật
     if (excludeId) {
       sql += " AND a.id != ?";
       params.push(excludeId);
@@ -265,7 +265,7 @@ const Appointment = {
 
     const [existingAppointments] = await db.query(sql, params);
 
-    // Check for time slot overlap
+    // Kiểm tra thời gian trùng lặp
     for (const existing of existingAppointments) {
       const existingDateStr = existing.appointment_date;
       let existingStart;
@@ -273,7 +273,7 @@ const Appointment = {
       if (existingDateStr instanceof Date) {
         existingStart = existingDateStr;
       } else if (typeof existingDateStr === "string") {
-        // MySQL returns datetime as string in format "YYYY-MM-DD HH:mm:ss"
+        // MySQL trả về datetime dưới dạng chuỗi trong định dạng "YYYY-MM-DD HH:mm:ss"
         const [datePart, timePart] = existingDateStr.split(" ");
         existingStart = new Date(`${datePart}T${timePart}+07:00`);
       } else {
@@ -285,14 +285,14 @@ const Appointment = {
         existingStart.getTime() + existingDuration * 60 * 1000
       );
 
-      // Check if time slots overlap
-      // Overlap occurs if: newStart < existingEnd AND existingStart < newEnd
+      // Kiểm tra nếu thời gian trùng lặp
+      // Trùng lặp xảy ra nếu: newStart < existingEnd và existingStart < newEnd
       if (appointmentTime < existingEnd && existingStart < newAppointmentEnd) {
-        return true; // Conflict found
+        return true; // Trùng lặp tìm thấy
       }
     }
 
-    return false; // No conflict
+    return false; // Không có trùng lặp
   },
 };
 

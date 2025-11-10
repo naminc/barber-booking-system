@@ -1,6 +1,6 @@
 const appointmentService = require("../services/appointmentService");
 
-// Get all appointments
+// Lấy tất cả lịch hẹn
 exports.getAll = async (req, res) => {
   try {
     const appointments = await appointmentService.getAllAppointments();
@@ -10,7 +10,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Get appointment by ID
+// Lấy lịch hẹn theo ID
 exports.getById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -24,7 +24,7 @@ exports.getById = async (req, res) => {
   }
 };
 
-// Get user's appointments
+// Lấy lịch hẹn của người dùng
 exports.getMyAppointments = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -37,7 +37,7 @@ exports.getMyAppointments = async (req, res) => {
   }
 };
 
-// Get appointments by user ID (admin)
+// Lấy lịch hẹn theo ID người dùng (admin)
 exports.getByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -50,7 +50,7 @@ exports.getByUserId = async (req, res) => {
   }
 };
 
-// Get appointments by status
+// Lấy lịch hẹn theo trạng thái
 exports.getByStatus = async (req, res) => {
   try {
     const { status } = req.params;
@@ -63,7 +63,7 @@ exports.getByStatus = async (req, res) => {
   }
 };
 
-// Get appointments by staff ID
+// Lấy lịch hẹn theo ID thợ barber
 exports.getByStaffId = async (req, res) => {
   try {
     const { staffId } = req.params;
@@ -76,7 +76,7 @@ exports.getByStaffId = async (req, res) => {
   }
 };
 
-// Get appointments by date range
+// Lấy lịch hẹn theo khoảng thời gian
 exports.getByDateRange = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
@@ -95,7 +95,7 @@ exports.getByDateRange = async (req, res) => {
   }
 };
 
-// Create appointment
+// Tạo lịch hẹn
 exports.create = async (req, res) => {
   try {
     const {
@@ -109,7 +109,7 @@ exports.create = async (req, res) => {
       note,
     } = req.body;
 
-    // Validation
+    // Kiểm tra dữ liệu
     if (
       !customer_name ||
       !customer_phone ||
@@ -123,14 +123,14 @@ exports.create = async (req, res) => {
       });
     }
 
-    // Check if appointment date is in the past
-    // Handle both ISO and MySQL datetime formats
+    // Kiểm tra nếu thời gian lịch hẹn là quá khứ
+    // Xử lý cả định dạng ISO và MySQL datetime
     let appointmentTime;
     if (
       typeof appointment_date === "string" &&
       appointment_date.includes(" ")
     ) {
-      // MySQL format: "YYYY-MM-DD HH:mm:ss"
+      // Định dạng MySQL: "YYYY-MM-DD HH:mm:ss"
       appointmentTime = new Date(appointment_date.replace(" ", "T"));
     } else {
       appointmentTime = new Date(appointment_date);
@@ -143,7 +143,7 @@ exports.create = async (req, res) => {
       });
     }
 
-    // Check for time conflicts
+    // Kiểm tra thời gian trùng lặp
     const hasConflict = await appointmentService.checkTimeConflict(
       staff_id,
       appointment_date,
@@ -156,15 +156,15 @@ exports.create = async (req, res) => {
       });
     }
 
-    // Determine user_id:
-    // - If request body explicitly includes user_id (from admin), use it (can be null for walk-in)
-    // - Otherwise, use the authenticated user's id
+    // Xác định user_id:
+    // - Nếu request body bao gồm user_id (từ admin), sử dụng nó (có thể là null cho khách đến)
+    // - Nếu không, sử dụng ID của người dùng đã xác thực
     let finalUserId;
     if (user_id !== undefined) {
-      // Admin explicitly set user_id (can be null)
+      // Admin rõ ràng đặt user_id (có thể là null)
       finalUserId = user_id;
     } else {
-      // Regular user or no user_id in body - use authenticated user's id
+      // Người dùng thường hoặc không có user_id trong body - sử dụng ID của người dùng đã xác thực
       finalUserId = req.user ? req.user.id : null;
     }
 
@@ -175,7 +175,7 @@ exports.create = async (req, res) => {
       service_id,
       staff_id,
       appointment_date,
-      // Admin can set custom status, regular users always get 'pending'
+      // Admin có thể đặt trạng thái tùy chỉnh, người dùng thường luôn nhận 'pending'
       status: status && req.user && req.user.role === "admin" ? status : "pending",
       note,
     };
@@ -191,7 +191,7 @@ exports.create = async (req, res) => {
   }
 };
 
-// Update appointment
+// Cập nhật lịch hẹn
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
@@ -201,7 +201,7 @@ exports.update = async (req, res) => {
       return res.status(404).json({ error: "Lịch hẹn không tồn tại" });
     }
 
-    // Check if user is the owner or admin
+    // Kiểm tra nếu người dùng là chủ sở hữu hoặc admin
     if (req.user.role !== "admin" && appointment.user_id !== req.user.id) {
       return res
         .status(403)
@@ -225,13 +225,13 @@ exports.update = async (req, res) => {
       }
     });
 
-    // If updating appointment_date or staff_id, check for conflicts
+    // Nếu cập nhật appointment_date hoặc staff_id, kiểm tra thời gian trùng lặp
     if (updateData.appointment_date || updateData.staff_id) {
       const checkDate =
         updateData.appointment_date || appointment.appointment_date;
       const checkStaffId = updateData.staff_id || appointment.staff_id;
 
-      // Check if new date is in the past
+      // Kiểm tra nếu ngày mới là quá khứ
       if (updateData.appointment_date) {
         const appointmentTime = new Date(updateData.appointment_date);
         const now = new Date();
@@ -242,7 +242,7 @@ exports.update = async (req, res) => {
         }
       }
 
-      // Check for time conflicts (exclude current appointment)
+      // Kiểm tra thời gian trùng lặp (loại trừ lịch hẹn hiện tại)
       const checkServiceId = updateData.service_id || appointment.service_id;
       const hasConflict = await appointmentService.checkTimeConflict(
         checkStaffId,
@@ -266,7 +266,7 @@ exports.update = async (req, res) => {
   }
 };
 
-// Update appointment status
+// Cập nhật trạng thái lịch hẹn
 exports.updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -293,7 +293,7 @@ exports.updateStatus = async (req, res) => {
   }
 };
 
-// Delete appointment
+// Xóa lịch hẹn
 exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
@@ -303,7 +303,7 @@ exports.delete = async (req, res) => {
       return res.status(404).json({ error: "Lịch hẹn không tồn tại" });
     }
 
-    // Check if user is the owner or admin
+    // Kiểm tra nếu người dùng là chủ sở hữu hoặc admin
     if (req.user.role !== "admin" && appointment.user_id !== req.user.id) {
       return res
         .status(403)
@@ -317,7 +317,7 @@ exports.delete = async (req, res) => {
   }
 };
 
-// Cancel appointment (user)
+// Hủy lịch hẹn (người dùng)
 exports.cancel = async (req, res) => {
   try {
     const { id } = req.params;
@@ -327,14 +327,14 @@ exports.cancel = async (req, res) => {
       return res.status(404).json({ error: "Lịch hẹn không tồn tại" });
     }
 
-    // Check if user is the owner
+    // Kiểm tra nếu người dùng là chủ sở hữu
     if (appointment.user_id !== req.user.id) {
       return res
         .status(403)
         .json({ error: "Bạn không có quyền hủy lịch hẹn này" });
     }
 
-    // Check if appointment can be cancelled
+    // Kiểm tra nếu lịch hẹn có thể được hủy
     if (appointment.status === "cancelled") {
       return res.status(400).json({ error: "Lịch hẹn này đã được hủy" });
     }
@@ -343,7 +343,7 @@ exports.cancel = async (req, res) => {
       return res.status(400).json({ error: "Không thể hủy lịch hẹn đã hoàn thành" });
     }
 
-    // Check if appointment date has passed
+    // Kiểm tra nếu ngày lịch hẹn đã qua
     const appointmentTime = new Date(appointment.appointment_date);
     const now = new Date();
     if (appointmentTime <= now) {
@@ -352,9 +352,9 @@ exports.cancel = async (req, res) => {
       });
     }
 
-    // Check if cancellation is at least 1 hour before appointment
+    // Kiểm tra nếu hủy lịch hẹn là ít nhất 1 giờ trước lịch hẹn
     const timeDiff = appointmentTime - now;
-    const oneHourInMs = 60 * 60 * 1000; // 1 hour in milliseconds
+    const oneHourInMs = 60 * 60 * 1000; // 1 giờ trong milliseconds
     if (timeDiff < oneHourInMs) {
       return res.status(400).json({ 
         error: "Chỉ có thể hủy lịch hẹn trước 1 giờ" 
@@ -370,7 +370,7 @@ exports.cancel = async (req, res) => {
   }
 };
 
-// Get appointment statistics
+// Lấy thống kê lịch hẹn
 exports.getStats = async (req, res) => {
   try {
     const total = await appointmentService.getAppointmentCount();

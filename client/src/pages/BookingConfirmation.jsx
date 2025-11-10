@@ -20,12 +20,19 @@ import { useNavigate } from "react-router-dom";
 import { useAuth, useAppointments } from "../hooks";
 import { formatDate } from "../utils/dateHelpers";
 import "../theme.css";
+import { useSettingsContext } from "../context/SettingsContext";
+import { formatPhoneForDisplay } from "../utils/phoneHelper";
 
 const BookingConfirmation = () => {
   const { bookingData, resetBookingData } = useBookingContext();
   const navigate = useNavigate();
   const { getCurrentUser } = useAuth();
   const { createAppointment, loading } = useAppointments();
+  const { getSetting } = useSettingsContext();
+  const shopAddress = getSetting("address");
+  const shopEmail = getSetting("email");
+  const shopPhone = getSetting("phone");
+  const shopPhoneDisplay = formatPhoneForDisplay(shopPhone);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -294,7 +301,7 @@ const BookingConfirmation = () => {
                         Địa chỉ
                       </div>
                       <div className="text-[var(--color-text-light)]">
-                        123 Đường ABC, Quận 1, TP.HCM
+                        {shopAddress}
                       </div>
                     </div>
                   </div>
@@ -307,7 +314,7 @@ const BookingConfirmation = () => {
                         Điện thoại
                       </div>
                       <div className="text-[var(--color-text-light)]">
-                        0123 456 789
+                        {shopPhoneDisplay}
                       </div>
                     </div>
                   </div>
@@ -320,7 +327,7 @@ const BookingConfirmation = () => {
                         Email
                       </div>
                       <div className="text-[var(--color-text-light)]">
-                        info@barbershop.com
+                        {shopEmail}
                       </div>
                     </div>
                   </div>

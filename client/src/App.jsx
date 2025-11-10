@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import Booking from "./pages/Booking";
 import SelectService from "./pages/SelectService";
@@ -63,7 +64,7 @@ function Home() {
 }
 
 export default function App() {
-  // Check token expiration every 30 seconds
+  // Kiểm tra thời gian hết hạn token mỗi 30 giây
   useTokenExpiration(30000);
 
   return (
@@ -75,6 +76,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
           <Route element={<ProtectedRoute roles={["user", "admin"]} />}>
             <Route path="/profile" element={<Profile />} />
