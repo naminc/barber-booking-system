@@ -25,6 +25,8 @@ app.get("/", (req, res) => res.send("Hello NodeJS Backend!"));
 app.get("/api/status", (req, res) =>
   res.json({ status: "Running", time: new Date() })
 );
+
+// Simple echo endpoint for testing purposes
 app.post("/api/echo", (req, res) => res.json({ received: req.body }));
 
 // Main routes

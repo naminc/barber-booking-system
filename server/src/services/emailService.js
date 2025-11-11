@@ -20,12 +20,6 @@ transporter.verify(function (error, success) {
   }
 });
 
-/**
- * Gửi email đặt lại mật khẩu
- * @param {string} to - Email người nhận
- * @param {string} resetToken - Token để đặt lại mật khẩu
- * @param {string} userName - Tên người dùng
- */
 exports.sendPasswordResetEmail = async (to, resetToken, userName) => {
   try {
     const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${resetToken}`;

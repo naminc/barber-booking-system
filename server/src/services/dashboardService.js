@@ -5,10 +5,8 @@ const db = require("../config/db");
 
 exports.getDashboardStats = async () => {
   try {
-    // Get total appointments
     const totalAppointments = await Appointment.getAppointmentCount();
 
-    // Get revenue from completed appointments
     const [revenueResult] = await db.query(`
       SELECT SUM(s.price) as total_revenue
       FROM appointments a
