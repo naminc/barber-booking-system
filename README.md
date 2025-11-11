@@ -83,8 +83,6 @@ barber-booking/
 │   │   ├── 📁 api/                     # API client modules
 │   │   │   ├── authApi.js
 │   │   │   ├── axiosClient.js
-│   │   │   ├── contactsApi.js
-│   │   │   ├── servicesApi.js
 │   │   ├── 📁 components/              # Reusable UI components
 │   │   │   ├── 📁 Admin/
 │   │   │   │   ├── Navbar.jsx
@@ -100,9 +98,6 @@ barber-booking/
 │   │   ├── 📁 hooks/                   # Custom React hooks
 │   │   │   ├── useAuth.js
 │   │   │   ├── useAvatar.js
-│   │   │   ├── useContacts.js
-│   │   │   ├── useForm.js
-│   │   │   ├── useNotification.js
 │   │   ├── 📁 layouts/                 # Layout components
 │   │   │   └── AdminLayout.jsx
 │   │   ├── 📁 pages/                   # Page components
@@ -119,8 +114,6 @@ barber-booking/
 │   │   │   │   │   └── 📁 components/
 │   │   │   │   ├── 📁 StaffManagement/
 │   │   │   │   └── 📁 UserManagement/
-│   │   │   ├── Booking.jsx
-│   │   │   ├── Forbidden.jsx
 │   │   │   ├── ForgotPassword.jsx
 │   │   │   ├── Login.jsx
 │   │   │   ├── Profile.jsx
@@ -138,8 +131,6 @@ barber-booking/
 │   ├── 📁 public/                      # Static assets
 │   │   └── vite.svg
 │   ├── 📁 imgs/                        # Image assets
-│   │   ├── 01.jpg, 02.jpg
-│   │   ├── about-img1.jpg
 │   │   ├── hero.jpg
 │   │   └── [other images...]
 │   ├── index.html                      # HTML template
@@ -154,32 +145,20 @@ barber-booking/
 │   │   │   └── db.js
 │   │   ├── 📁 controllers/             # Route controllers
 │   │   │   ├── authController.js
-│   │   │   ├── contactController.js
-│   │   │   ├── reviewController.js
 │   │   ├── 📁 middlewares/             # Express middlewares
 │   │   │   ├── authMiddleware.js
 │   │   │   ├── roleMiddleware.js
 │   │   │   ├── upload.js
 │   │   │   └── validate.js
 │   │   ├── 📁 models/                  # Database models
-│   │   │   ├── Review.js
-│   │   │   ├── Service.js
-│   │   │   ├── Setting.js
-│   │   │   ├── Staff.js
 │   │   │   └── User.js
 │   │   ├── 📁 routes/                  # API routes
 │   │   │   ├── authRoutes.js
-│   │   │   ├── contactRoutes.js
-│   │   │   ├── reviewRoutes.js
 │   │   ├── 📁 services/                # Business logic services
 │   │   │   ├── authService.js
-│   │   │   ├── contactService.js
-│   │   │   ├── reviewService.js
 │   │   ├── 📁 utils/                   # Utility functions
 │   │   │   └── helpers.js
 │   │   ├── 📁 validations/             # Input validation schemas
-│   │   │   ├── reviewValidation.js
-│   │   │   ├── settingValidation.js
 │   │   │   └── userValidation.js
 │   │   └── app.js                      # Express app configuration
 │   ├── 📁 public/uploads/              # File upload directory
@@ -200,7 +179,7 @@ barber-booking/
 
 ### Prerequisites
 
-- Node.js (v16 or higher)
+- Node.js (v18 or higher)
 - MySQL database
 - npm or yarn
 
@@ -248,10 +227,11 @@ barber-booking/
 
    ```bash
    # Start the server (from server directory)
+   cd server
    npm run dev
 
    # Start the client (from client directory)
-   cd ../client
+   cd client
    npm run dev
    ```
 

@@ -25,7 +25,6 @@ const SelectTime = () => {
   const [notes, setNotes] = useState(bookingData.notes || "");
   const [availableTimes, setAvailableTimes] = useState([]);
 
-  // Generate available times based on barber's working hours
   const generateAvailableTimes = (barberName) => {
     const workingHours = {
       "Anh Hưng Barber": { start: 8, end: 20 },
@@ -97,6 +96,30 @@ const SelectTime = () => {
     return maxDate.toISOString().split("T")[0];
   };
 
+  // Check if a time slot is disabled (has passed or is at current time)
+  const isTimeDisabled = (time) => {
+    if (!selectedDate) return false;
+
+    const today = new Date();
+    const selectedDateObj = new Date(selectedDate);
+
+    // Check if selected date is today
+    const isToday =
+      selectedDateObj.getDate() === today.getDate() &&
+      selectedDateObj.getMonth() === today.getMonth() &&
+      selectedDateObj.getFullYear() === today.getFullYear();
+
+    if (!isToday) return false; // If not today, all times are available
+
+    // Parse the time string (format: "HH:MM")
+    const [hours, minutes] = time.split(":").map(Number);
+    const timeSlot = new Date(today);
+    timeSlot.setHours(hours, minutes, 0, 0);
+
+    // Disable if time has passed or is at current time
+    return timeSlot <= today;
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a] text-white">
       <Header />
@@ -154,46 +177,61 @@ const SelectTime = () => {
                       <FaClock className="inline-block mr-2" /> Chọn giờ *
                     </label>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                      {availableTimes.map((time, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleTimeSelect(time)}
-                          className={`group relative p-4 rounded-xl border-2 transition-all duration-300 overflow-hidden ${
-                            selectedTime === time
-                              ? "border-[var(--color-gold)] bg-gradient-to-br from-[var(--color-gold)]/30 to-[var(--color-gold)]/10 text-[var(--color-gold)] shadow-[0_0_20px_rgba(194,158,117,0.3)] scale-105"
-                              : "border-[var(--color-border)] hover:border-[var(--color-gold)]/50 hover:bg-[var(--color-gold)]/5 hover:scale-105"
-                          }`}
-                          style={{
-                            animation: `fadeInScale 0.4s ease-out ${
-                              index * 0.02
-                            }s both`,
-                          }}
-                        >
-                          {/* Shine effect */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-
-                          {/* Time Display */}
-                          <div className="relative z-10 text-center">
-                            <div
-                              className={`font-bold text-base mb-1 ${
-                                selectedTime === time
-                                  ? "text-[var(--color-gold)]"
-                                  : "text-[var(--color-text-main)]"
-                              }`}
-                            >
-                              {time}
-                            </div>
-                            {selectedTime === time && (
-                              <FaCheckCircle className="text-[var(--color-gold)] text-xs mx-auto" />
+                      {availableTimes.map((time, index) => {
+                        const disabled = isTimeDisabled(time);
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => !disabled && handleTimeSelect(time)}
+                            disabled={disabled}
+                            className={`group relative p-4 rounded-xl border-2 transition-all duration-300 overflow-hidden ${
+                              disabled
+                                ? "border-[var(--color-border)]/10 bg-[var(--color-dark-bg)]/20 text-[var(--color-text-muted)]/20 cursor-not-allowed opacity-15 grayscale"
+                                : selectedTime === time
+                                ? "border-[var(--color-gold)] bg-gradient-to-br from-[var(--color-gold)]/30 to-[var(--color-gold)]/10 text-[var(--color-gold)] shadow-[0_0_20px_rgba(194,158,117,0.3)] scale-105"
+                                : "border-[var(--color-border)] hover:border-[var(--color-gold)]/50 hover:bg-[var(--color-gold)]/5 hover:scale-105"
+                            }`}
+                            style={{
+                              animation: `fadeInScale 0.4s ease-out ${
+                                index * 0.02
+                              }s both`,
+                            }}
+                          >
+                            {/* Dark overlay for disabled buttons */}
+                            {disabled && (
+                              <div className="absolute inset-0 bg-black/60 rounded-xl z-20"></div>
                             )}
-                          </div>
 
-                          {/* Selection indicator line */}
-                          {selectedTime === time && (
-                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-gold)] to-transparent"></div>
-                          )}
-                        </button>
-                      ))}
+                            {/* Shine effect - only show if not disabled */}
+                            {!disabled && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                            )}
+
+                            {/* Time Display */}
+                            <div className="relative z-10 text-center">
+                              <div
+                                className={`font-bold text-base mb-1 ${
+                                  disabled
+                                    ? "text-[var(--color-text-muted)]/15"
+                                    : selectedTime === time
+                                    ? "text-[var(--color-gold)]"
+                                    : "text-[var(--color-text-main)]"
+                                }`}
+                              >
+                                {time}
+                              </div>
+                              {selectedTime === time && !disabled && (
+                                <FaCheckCircle className="text-[var(--color-gold)] text-xs mx-auto" />
+                              )}
+                            </div>
+
+                            {/* Selection indicator line */}
+                            {selectedTime === time && !disabled && (
+                              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-gold)] to-transparent"></div>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
