@@ -145,6 +145,14 @@ const Header = () => {
                       className="flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
                     >Hồ sơ
                     </Link>
+                    {user.role === "admin" && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
+                      >Admin Panel
+                      </Link>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="w-full text-left flex items-center gap-2 px-4 py-2 hover:bg-[#c29e75]/20 transition-all"
