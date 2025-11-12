@@ -27,11 +27,20 @@ export function SettingsProvider({ children }) {
   // Cập nhật cấu hình
   const updateSettings = async (newSettings) => {
     try {
+      // settingsApi returns the data object directly (the updated settings)
       const updated = await settingsApi.updateSettings(newSettings);
       setSettings(updated);
       return updated;
     } catch (err) {
-      throw err;
+      // Re-throw with proper error message
+      const errorMessage = 
+        err.response?.data?.message || 
+        err.response?.data?.error || 
+        err.message || 
+        "Cập nhật thất bại";
+      const error = new Error(errorMessage);
+      error.response = err.response;
+      throw error;
     }
   };
 

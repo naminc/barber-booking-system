@@ -51,7 +51,12 @@ export default function Settings() {
       await fetchSettings();
       toast.success("Cập nhật thành công!");
     } catch (err) {
-      toast.error(err.message || "Cập nhật thất bại. Vui lòng thử lại.");
+      const errorMessage = 
+        err.response?.data?.message || 
+        err.response?.data?.error || 
+        err.message || 
+        "Cập nhật thất bại. Vui lòng thử lại.";
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }

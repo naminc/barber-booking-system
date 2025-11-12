@@ -12,4 +12,8 @@ exports.updateSettingSchema = Joi.object({
   email: Joi.string().email().allow("", null).max(150),
   phone: Joi.string().allow("", null).max(20),
   address: Joi.string().allow("", null).max(255),
+  websiteName: Joi.string().allow("", null).max(100),
+  slogan: Joi.string().allow("", null).max(255),
+  iframeGoogleMap: Joi.string().allow("", null),
+  developer: Joi.string().allow("", null).max(100),
 });
